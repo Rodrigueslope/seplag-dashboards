@@ -106,7 +106,7 @@
 
 <body>
 
-  <!-- HEADER COM LOGO CORRETA -->
+  <!-- HEADER -->
   <div class="header">
     <div class="header-left">
       <img src="RBIM.png" alt="Logo RBIM">
@@ -128,7 +128,7 @@
       </div>
     </div>
 
-    <!-- DASHBOARDS DE TEMPERATURA E UMIDADE -->
+    <!-- DASHBOARDS -->
     <div class="dashboard-row">
       <div class="dashboard-col">
         <div class="dashboard-box">
@@ -145,7 +145,6 @@
       </div>
     </div>
 
-    <!-- CONDIÇÕES ATUAIS -->
     <div class="dashboard-row">
       <div class="dashboard-col" style="width: 100%; margin-right: 0;">
         <div class="dashboard-box">
@@ -167,6 +166,7 @@
 
   </div>
 
+  <!-- SCRIPT -->
   <script>
     const apiKey = 'd9da98b3560b007a19706897feaa7416';
     const cidade = 'Fortaleza';
@@ -190,15 +190,22 @@
       line: { color: 'blue', shape: 'spline', smoothing: 1.3 }
     }], layoutVento);
 
-    setInterval(atualizarVentoTempoReal, 30000);
-    atualizarVentoTempoReal();
+    // Atualizar VENTO a cada 5 segundos
+    setInterval(atualizarVento, 5000);
 
-    function atualizarVentoTempoReal() {
+    // Atualizar TEMPERATURA e UMIDADE a cada 30 segundos
+    setInterval(atualizarTemperaturaUmidade, 30000);
+
+    // Primeira chamada para não esperar
+    atualizarVento();
+    atualizarTemperaturaUmidade();
+
+    function atualizarVento() {
       fetch(url)
         .then(response => response.json())
         .then(data => {
           const ventoReal = data.wind.speed;
-          const oscilar = (Math.random() - 0.5) * 1.2; // Aumentei a ondulação
+          const oscilar = (Math.random() - 0.5) * 1.2;
           const ventoComOscilacao = ventoReal + oscilar;
           const horaAtual = new Date().toISOString();
 
@@ -215,19 +222,21 @@
             ventoDados.shift();
           }
         })
-        .catch(error => console.error('Erro ao buscar vento tempo real:', error));
+        .catch(error => console.error('Erro ao buscar vento:', error));
     }
 
-    fetch(url)
-      .then(response => response.json())
-      .then(data => {
-        const temperatura = data.main.temp;
-        const umidade = data.main.humidity;
-        const descricao = data.weather[0].description;
+    function atualizarTemperaturaUmidade() {
+      fetch(url)
+        .then(response => response.json())
+        .then(data => {
+          const temperatura = data.main.temp;
+          const umidade = data.main.humidity;
+          const descricao = data.weather[0].description;
 
-        atualizarGraficos(temperatura, umidade, descricao);
-      })
-      .catch(error => console.error('Erro ao buscar dados do clima:', error));
+          atualizarGraficos(temperatura, umidade, descricao);
+        })
+        .catch(error => console.error('Erro ao buscar temperatura/umidade:', error));
+    }
 
     function atualizarGraficos(temperatura, umidade, descricao) {
       document.getElementById('update-date').textContent = new Date().toLocaleString('pt-BR', {
@@ -289,3 +298,4 @@
 
 </body>
 </html>
+
