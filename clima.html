@@ -1,301 +1,215 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard de Condições Climáticas - SEPLAG-CE</title>
-  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      background-color: #f8f9fa;
-    }
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 20px;
-    }
-    .header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 20px;
-      background-color: #fff;
-      border-bottom: 1px solid #ddd;
-      margin-bottom: 30px;
-    }
-    .header-left {
-      display: flex;
-      align-items: center;
-    }
-    .header-left img {
-      height: 50px;
-      margin-right: 15px;
-    }
-    .header-left h1 {
-      margin: 0;
-      font-size: 24px;
-      color: #333;
-    }
-    .update-info {
-      font-size: 12px;
-      color: #666;
-    }
-    .dashboard-row {
-      display: flex;
-      flex-wrap: wrap;
-      margin-bottom: 30px;
-    }
-    .dashboard-col {
-      width: 48%;
-      margin-bottom: 20px;
-    }
-    .dashboard-col:nth-child(odd) {
-      margin-right: 4%;
-    }
-    .dashboard-box {
-      background-color: #fff;
-      border-radius: 5px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-      padding: 20px;
-      height: 100%;
-    }
-    .dashboard-box h3 {
-      margin-top: 0;
-      text-align: center;
-      color: #0066cc;
-      margin-bottom: 20px;
-    }
-    .conditions-box {
-      text-align: center;
-      padding: 20px;
-      background-color: #f8f9fa;
-      border-radius: 5px;
-      margin-bottom: 20px;
-    }
-    .conditions-box .condition {
-      font-size: 24px;
-      margin-bottom: 10px;
-    }
-    .footer {
-      text-align: center;
-      margin-top: 50px;
-      color: #666;
-      font-size: 14px;
-    }
-    .back-button {
-      display: inline-block;
-      margin-top: 20px;
-      padding: 10px 20px;
-      background-color: #0066cc;
-      color: white;
-      text-decoration: none;
-      border-radius: 5px;
-      font-weight: bold;
-    }
-    @media (max-width: 768px) {
-      .dashboard-col {
-        width: 100%;
-        margin-right: 0;
-      }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard de Condições Climáticas - SEPLAG-CE</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px;
+            background-color: #fff;
+            border-bottom: 1px solid #ddd;
+            margin-bottom: 30px;
+        }
+        .header-left {
+            display: flex;
+            align-items: center;
+        }
+        .header-left img {
+            height: 50px;
+            margin-right: 15px;
+        }
+        .header-left h1 {
+            margin: 0;
+            font-size: 24px;
+            color: #333;
+        }
+        .update-info {
+            font-size: 12px;
+            color: #666;
+        }
+        .dashboard-row {
+            display: flex;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+        }
+        .dashboard-col {
+            width: 48%;
+            margin-bottom: 20px;
+        }
+        .dashboard-col:nth-child(odd) {
+            margin-right: 4%;
+        }
+        .dashboard-box {
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            padding: 20px;
+            height: 100%;
+        }
+        .dashboard-box h3 {
+            margin-top: 0;
+            text-align: center;
+            color: #0066cc;
+            margin-bottom: 20px;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 50px;
+            color: #666;
+            font-size: 14px;
+        }
+        .back-button {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #0066cc;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        @media (max-width: 768px) {
+            .dashboard-col {
+                width: 100%;
+                margin-right: 0;
+            }
+        }
+    </style>
 </head>
-
 <body>
 
-  <!-- HEADER -->
-  <div class="header">
-    <div class="header-left">
-      <img src="RBIM.png" alt="Logo RBIM">
-      <h1>Condições Climáticas</h1>
-    </div>
-    <div class="update-info">
-      Atualizado em: <span id="update-date"></span>
-    </div>
-  </div>
-
-  <!-- GRÁFICO DE VENTO -->
-  <div class="container">
-    <div class="dashboard-row">
-      <div class="dashboard-col" style="width: 100%; margin-right: 0;">
-        <div class="dashboard-box">
-          <h3>Velocidade do Vento em Tempo Real</h3>
-          <div id="vento-line-chart" style="height:300px;"></div>
+    <div class="header">
+        <div class="header-left">
+            <img src="RBIM.png" alt="SEPLAG-CE Logo">
+            <h1>Condições Climáticas</h1>
         </div>
-      </div>
-    </div>
-
-    <!-- DASHBOARDS -->
-    <div class="dashboard-row">
-      <div class="dashboard-col">
-        <div class="dashboard-box">
-          <h3>Temperatura Atual</h3>
-          <div id="temperatura-gauge"></div>
+        <div class="update-info">
+            Atualizado em: <span id="update-date"></span>
         </div>
-      </div>
+    </div>
 
-      <div class="dashboard-col">
-        <div class="dashboard-box">
-          <h3>Umidade Relativa</h3>
-          <div id="umidade-gauge"></div>
+    <div class="container">
+        <div class="dashboard-row">
+            <div class="dashboard-col">
+                <div class="dashboard-box">
+                    <h3>Temperatura Atual</h3>
+                    <div id="temperatura-gauge"></div>
+                </div>
+            </div>
+
+            <div class="dashboard-col">
+                <div class="dashboard-box">
+                    <h3>Umidade Relativa</h3>
+                    <div id="umidade-gauge"></div>
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
 
-    <div class="dashboard-row">
-      <div class="dashboard-col" style="width: 100%; margin-right: 0;">
-        <div class="dashboard-box">
-          <h3>Condições Atuais</h3>
-          <div class="conditions-box">
-            <div class="condition">Carregando...</div>
-          </div>
+        <div style="text-align: center;">
+            <a href="index.html" class="back-button">Voltar para Dashboards</a>
         </div>
-      </div>
+
+        <div class="footer">
+            <p>Este dashboard foi desenvolvido para o tour virtual Matterport da SEPLAG-CE.</p>
+        </div>
     </div>
 
-    <div style="text-align: center;">
-      <a href="index.html" class="back-button">Voltar para Dashboards</a>
-    </div>
+    <script>
+        // Atualizar data de atualização no cabeçalho
+        document.getElementById('update-date').textContent = new Date().toLocaleString('pt-BR', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
 
-    <div class="footer">
-      <p>Este dashboard foi desenvolvido para o tour virtual Matterport da SEPLAG-CE.</p>
-    </div>
+        const apiKey = 'SUA_API_KEY_AQUI'; // Trocar pela sua API Key
+        const latitude = -3.71722; // Localização da SEPLAG
+        const longitude = -38.5433;
 
-  </div>
+        function atualizarTemperaturaUmidade() {
+            fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${apiKey}&units=metric`)
+                .then(response => response.json())
+                .then(data => {
+                    const temperatura = data.main.temp;
+                    const umidade = data.main.humidity;
 
-  <!-- SCRIPT -->
-  <script>
-    const apiKey = 'd9da98b3560b007a19706897feaa7416';
-    const cidade = 'Fortaleza';
-    const url = `https://api.openweathermap.org/data/2.5/weather?q=${cidade}&appid=${apiKey}&units=metric&lang=pt_br`;
+                    const temperaturaGauge = {
+                        type: "indicator",
+                        mode: "gauge+number",
+                        value: temperatura,
+                        title: { text: "Temperatura (°C)" },
+                        gauge: {
+                            axis: { range: [0, 40], tickwidth: 1 },
+                            bar: { color: "orange" },
+                            steps: [
+                                { range: [0, 15], color: "lightblue" },
+                                { range: [15, 25], color: "lightgreen" },
+                                { range: [25, 35], color: "lightyellow" },
+                                { range: [35, 40], color: "lightcoral" }
+                            ],
+                            threshold: {
+                                line: { color: "red", width: 4 },
+                                thickness: 0.75,
+                                value: 35
+                            }
+                        }
+                    };
 
-    let tempoDados = [];
-    let ventoDados = [];
+                    const umidadeGauge = {
+                        type: "indicator",
+                        mode: "gauge+number",
+                        value: umidade,
+                        title: { text: "Umidade (%)" },
+                        gauge: {
+                            axis: { range: [0, 100], tickwidth: 1 },
+                            bar: { color: "blue" },
+                            steps: [
+                                { range: [0, 30], color: "lightyellow" },
+                                { range: [30, 70], color: "lightblue" },
+                                { range: [70, 100], color: "royalblue" }
+                            ],
+                            threshold: {
+                                line: { color: "navy", width: 4 },
+                                thickness: 0.75,
+                                value: 85
+                            }
+                        }
+                    };
 
-    const layoutVento = {
-      title: 'Vento em Tempo Real (m/s)',
-      xaxis: { title: 'Hora', type: 'date' },
-      yaxis: { title: 'Velocidade (m/s)', range: [0, 20] },
-      margin: { t: 50, b: 50, l: 50, r: 50 },
-      height: 300
-    };
+                    Plotly.react('temperatura-gauge', [temperaturaGauge], {
+                        margin: { t: 50, b: 20, l: 20, r: 20 },
+                        height: 250
+                    });
 
-    Plotly.newPlot('vento-line-chart', [{
-      x: tempoDados,
-      y: ventoDados,
-      mode: 'lines+markers',
-      line: { color: 'blue', shape: 'spline', smoothing: 1.3 }
-    }], layoutVento);
-
-    // Atualizar VENTO a cada 5 segundos
-    setInterval(atualizarVento, 5000);
-
-    // Atualizar TEMPERATURA e UMIDADE a cada 30 segundos
-    setInterval(atualizarTemperaturaUmidade, 30000);
-
-    // Primeira chamada para não esperar
-    atualizarVento();
-    atualizarTemperaturaUmidade();
-
-    function atualizarVento() {
-      fetch(url)
-        .then(response => response.json())
-        .then(data => {
-          const ventoReal = data.wind.speed;
-          const oscilar = (Math.random() - 0.5) * 1.2;
-          const ventoComOscilacao = ventoReal + oscilar;
-          const horaAtual = new Date().toISOString();
-
-          tempoDados.push(horaAtual);
-          ventoDados.push(Math.max(0, ventoComOscilacao.toFixed(2)));
-
-          Plotly.update('vento-line-chart', {
-            x: [tempoDados],
-            y: [ventoDados]
-          });
-
-          if (tempoDados.length > 20) {
-            tempoDados.shift();
-            ventoDados.shift();
-          }
-        })
-        .catch(error => console.error('Erro ao buscar vento:', error));
-    }
-
-    function atualizarTemperaturaUmidade() {
-      fetch(url)
-        .then(response => response.json())
-        .then(data => {
-          const temperatura = data.main.temp;
-          const umidade = data.main.humidity;
-          const descricao = data.weather[0].description;
-
-          atualizarGraficos(temperatura, umidade, descricao);
-        })
-        .catch(error => console.error('Erro ao buscar temperatura/umidade:', error));
-    }
-
-    function atualizarGraficos(temperatura, umidade, descricao) {
-      document.getElementById('update-date').textContent = new Date().toLocaleString('pt-BR', {
-        day: '2-digit',
-        month: '2-digit',
-        year: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit'
-      });
-
-      const temperaturaGauge = {
-        type: "indicator",
-        mode: "gauge+number",
-        value: temperatura,
-        title: { text: "Temperatura (°C)" },
-        gauge: {
-          axis: { range: [0, 40], tickwidth: 1 },
-          bar: { color: "orange" },
-          steps: [
-            { range: [0, 15], color: "lightblue" },
-            { range: [15, 25], color: "lightgreen" },
-            { range: [25, 35], color: "lightyellow" },
-            { range: [35, 40], color: "lightcoral" }
-          ],
-          threshold: {
-            line: { color: "red", width: 4 },
-            thickness: 0.75,
-            value: 35
-          }
+                    Plotly.react('umidade-gauge', [umidadeGauge], {
+                        margin: { t: 50, b: 20, l: 20, r: 20 },
+                        height: 250
+                    });
+                })
+                .catch(error => console.error('Erro ao buscar dados:', error));
         }
-      };
-      Plotly.newPlot('temperatura-gauge', [temperaturaGauge], { margin: { t: 50, b: 20, l: 20, r: 20 }, height: 250 });
 
-      const umidadeGauge = {
-        type: "indicator",
-        mode: "gauge+number",
-        value: umidade,
-        title: { text: "Umidade (%)" },
-        gauge: {
-          axis: { range: [0, 100], tickwidth: 1 },
-          bar: { color: "blue" },
-          steps: [
-            { range: [0, 30], color: "lightyellow" },
-            { range: [30, 70], color: "lightblue" },
-            { range: [70, 100], color: "royalblue" }
-          ],
-          threshold: {
-            line: { color: "navy", width: 4 },
-            thickness: 0.75,
-            value: 85
-          }
-        }
-      };
-      Plotly.newPlot('umidade-gauge', [umidadeGauge], { margin: { t: 50, b: 20, l: 20, r: 20 }, height: 250 });
-
-      document.querySelector('.conditions-box .condition').textContent = descricao.charAt(0).toUpperCase() + descricao.slice(1);
-    }
-  </script>
+        atualizarTemperaturaUmidade();
+        setInterval(atualizarTemperaturaUmidade, 30000);
+    </script>
 
 </body>
 </html>
-
