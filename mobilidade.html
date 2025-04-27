@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard de Mobilidade Urbana - SEPLAG-CE</title>
-  
+
   <script src="https://js.api.here.com/v3/3.1/mapsjs-core.js"></script>
   <script src="https://js.api.here.com/v3/3.1/mapsjs-service.js"></script>
   <script src="https://js.api.here.com/v3/3.1/mapsjs-ui.js"></script>
@@ -12,86 +12,49 @@
   <link rel="stylesheet" href="https://js.api.here.com/v3/3.1/mapsjs-ui.css" />
 
   <style>
-    body { font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f8f9fa; }
-    .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
-    .header { display: flex; align-items: center; justify-content: space-between; padding: 20px; background-color: #fff; border-bottom: 1px solid #ddd; margin-bottom: 30px; }
-    .header-left { display: flex; align-items: center; }
-    .header-left img { height: 50px; margin-right: 15px; }
-    .header-left h1 { margin: 0; font-size: 24px; color: #333; }
-    .update-info { font-size: 12px; color: #666; }
-    .dashboard-box { background-color: #fff; border-radius: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); padding: 20px; margin-bottom: 30px; }
-    .dashboard-box h3 { margin-top: 0; text-align: center; color: #cc6600; margin-bottom: 20px; }
-    #map { width: 100%; height: 500px; }
-    .footer { text-align: center; margin-top: 20px; color: #666; font-size: 14px; }
-    .back-button { display: inline-block; margin-top: 20px; padding: 10px 20px; background-color: #cc6600; color: white; text-decoration: none; border-radius: 5px; font-weight: bold; }
+    body { margin: 0; padding: 0; }
+    #map { width: 100vw; height: 100vh; }
   </style>
 </head>
 
 <body>
-  <div class="header">
-    <div class="header-left">
-      <img src="RBIM.png" alt="SEPLAG-CE Logo">
-      <h1>Mobilidade Urbana</h1>
-    </div>
-    <div class="update-info">
-      Atualizado em: <span id="update-date"></span>
-    </div>
-  </div>
 
-  <div class="container">
-    <div class="dashboard-box">
-      <h3>Trânsito Atual na Região da <strong>SEPLAG-CE</strong></h3>
-      <div id="map"></div>
-    </div>
+<div id="map"></div>
 
-    <div style="text-align: center;">
-      <a href="index.html" class="back-button">Voltar para Dashboards</a>
-    </div>
+<script>
+  var platform = new H.service.Platform({
+    apikey: 'kEhxcp7sQl0hf7PuQv9cZGPrY4lIKA2FmF5OL9lecKhA' // Sua API KEY
+  });
 
-    <div class="footer">
-      <p>Este dashboard foi desenvolvido para o tour virtual Matterport da SEPLAG-CE.</p>
-    </div>
-  </div>
+  var layers = platform.createDefaultLayers({
+    lg: 'por' // Carrega linguagem Português
+  });
 
-  <script>
-    // Atualizar a data
-    function atualizarDataHora() {
-      document.getElementById('update-date').textContent = new Date().toLocaleDateString('pt-BR', {
-        day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit'
-      });
+  // Agora usa mapa RASTER (não vetorial)
+  var map = new H.Map(
+    document.getElementById('map'),
+    layers.raster.normal.map, // Mapa normal rasterizado
+    {
+      center: { lat: -3.809204, lng: -38.491068 }, // SEPLAG Fortaleza
+      zoom: 15,
+      pixelRatio: window.devicePixelRatio || 1
     }
-    atualizarDataHora();
+  );
 
-    // Inicializar o HERE Maps
-    var platform = new H.service.Platform({
-      apikey: 'kEhxcp7sQl0hf7PuQv9cZGPrY4lIKA2FmF5OL9lecKhA' // A SUA API KEY
-    });
+  window.addEventListener('resize', () => map.getViewPort().resize());
 
-    var defaultLayers = platform.createDefaultLayers();
+  var behavior = new H.mapevents.Behavior(new H.mapevents.MapEvents(map));
+  var ui = H.ui.UI.createDefault(map, layers);
 
-    var map = new H.Map(
-      document.getElementById('map'),
-      defaultLayers.vector.normal.map,
-      {
-        center: { lat: -3.809204, lng: -38.491068 }, // SEPLAG Fortaleza
-        zoom: 16,
-        pixelRatio: window.devicePixelRatio || 1
-      }
-    );
+  // 🔥 Aqui carrega camada de trânsito como Tile Layer
+  var trafficLayer = platform.getMapTileService({type: 'traffic'}).createTileLayer(
+    'flow',
+    256,
+    { style: 'relative' }
+  );
 
-    window.addEventListener('resize', () => map.getViewPort().resize());
-
-    var behavior = new H.mapevents.Behavior(new H.mapevents.MapEvents(map));
-    var ui = H.ui.UI.createDefault(map, defaultLayers);
-
-    // Adicionar camada de trânsito
-    var trafficLayer = platform.getMapTileService({ type: 'traffic' }).createTileLayer(
-      'flow',
-      256,
-      { style: 'relative' }
-    );
-    map.addLayer(trafficLayer);
-  </script>
+  map.addLayer(trafficLayer);
+</script>
 
 </body>
 </html>
