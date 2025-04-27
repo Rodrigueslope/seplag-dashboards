@@ -1,231 +1,267 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard de Mobilidade Urbana - SEPLAG-CE</title>
-
-    <script src="https://js.api.here.com/v3/3.1/mapsjs-core.js"></script>
-    <script src="https://js.api.here.com/v3/3.1/mapsjs-service.js"></script>
-    <script src="https://js.api.here.com/v3/3.1/mapsjs-mapevents.js"></script>
-    <script src="https://js.api.here.com/v3/3.1/mapsjs-ui.js"></script>
-    <link rel="stylesheet" href="https://js.api.here.com/v3/3.1/mapsjs-ui.css" />
-
-    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f8f9fa;
-        }
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        .header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 20px;
-            background-color: #fff;
-            border-bottom: 1px solid #ddd;
-            margin-bottom: 30px;
-        }
-        .header-left {
-            display: flex;
-            align-items: center;
-        }
-        .header-left img {
-            height: 50px;
-            margin-right: 15px;
-        }
-        .header-left h1 {
-            margin: 0;
-            font-size: 24px;
-            color: #333;
-        }
-        .update-info {
-            font-size: 12px;
-            color: #666;
-        }
-        #map {
-            width: 100%;
-            height: 400px;
-            background: #e0e0e0;
-            margin-bottom: 30px;
-            border-radius: 8px;
-        }
-        .dashboard-box {
-            background-color: #fff;
-            border-radius: 5px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            padding: 20px;
-            margin-bottom: 30px;
-        }
-        h3 {
-            margin-top: 0;
-            text-align: center;
-            color: #cc6600;
-            margin-bottom: 20px;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: center;
-        }
-        th {
-            background-color: #fff2e6;
-            color: #cc6600;
-        }
-        .footer {
-            text-align: center;
-            margin-top: 30px;
-            color: #666;
-            font-size: 14px;
-        }
-        .back-button {
-            display: inline-block;
-            margin-top: 20px;
-            padding: 10px 20px;
-            background-color: #cc6600;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-            font-weight: bold;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard de Mobilidade Urbana - SEPLAG-CE</title>
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  <script src="https://js.api.here.com/v3/3.1/mapsjs-core.js"></script>
+  <script src="https://js.api.here.com/v3/3.1/mapsjs-service.js"></script>
+  <script src="https://js.api.here.com/v3/3.1/mapsjs-ui.js"></script>
+  <script src="https://js.api.here.com/v3/3.1/mapsjs-mapevents.js"></script>
+  <link rel="stylesheet" href="https://js.api.here.com/v3/3.1/mapsjs-ui.css" />
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f8f9fa;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px;
+      background-color: #fff;
+      border-bottom: 1px solid #ddd;
+    }
+    .header-left {
+      display: flex;
+      align-items: center;
+    }
+    .header-left img {
+      height: 50px;
+      margin-right: 15px;
+    }
+    .header-left h1 {
+      margin: 0;
+      font-size: 24px;
+      color: #333;
+    }
+    .update-info {
+      font-size: 12px;
+      color: #666;
+    }
+    .dashboard-row {
+      display: flex;
+      flex-wrap: wrap;
+      margin-top: 20px;
+    }
+    .dashboard-col {
+      width: 100%;
+      margin-bottom: 20px;
+    }
+    .dashboard-box {
+      background-color: #fff;
+      border-radius: 5px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      padding: 20px;
+    }
+    .dashboard-box h3 {
+      margin-top: 0;
+      text-align: center;
+      color: #cc6600;
+      margin-bottom: 20px;
+    }
+    .bus-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+    .bus-table th, .bus-table td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: center;
+    }
+    .bus-table th {
+      background-color: #fff2e6;
+      color: #cc6600;
+    }
+    .bus-table tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+    .footer {
+      text-align: center;
+      margin-top: 50px;
+      color: #666;
+      font-size: 14px;
+    }
+    .back-button {
+      display: inline-block;
+      margin-top: 20px;
+      padding: 10px 20px;
+      background-color: #cc6600;
+      color: white;
+      text-decoration: none;
+      border-radius: 5px;
+      font-weight: bold;
+    }
+    @media (max-width: 768px) {
+      .dashboard-col {
+        width: 100%;
+      }
+    }
+    /* Spinner e mensagem */
+    #loading-spinner {
+      display: none;
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 9999;
+    }
+    #success-message {
+      display: none;
+      position: fixed;
+      top: 70px;
+      right: 20px;
+      background-color: #28a745;
+      color: white;
+      padding: 10px 15px;
+      border-radius: 5px;
+      font-size: 14px;
+      z-index: 9999;
+    }
+  </style>
 </head>
+
 <body>
-    <div class="header">
-        <div class="header-left">
-            <img src="RBIM.png" alt="SEPLAG-CE Logo">
-            <h1>Mobilidade Urbana</h1>
-        </div>
-        <div class="update-info">
-            Atualizado em: <span id="update-date"></span>
-        </div>
+
+<!-- Spinner e mensagem -->
+<div id="loading-spinner">
+  <img src="https://i.gifer.com/YCZH.gif" alt="Carregando..." style="width:40px;">
+</div>
+<div id="success-message">Trânsito atualizado com sucesso!</div>
+
+<!-- Cabeçalho -->
+<div class="header">
+  <div class="header-left">
+    <img src="RBIM.png" alt="SEPLAG-CE Logo">
+    <h1>Mobilidade Urbana</h1>
+  </div>
+  <div class="update-info">
+    Atualizado em: <span id="update-date"></span>
+  </div>
+</div>
+
+<div class="container">
+
+  <div class="dashboard-row">
+    <div class="dashboard-col">
+      <div class="dashboard-box">
+        <h3>Trânsito Atual na Região da <b>SEPLAG-CE</b></h3>
+        <div id="map" style="width:100%; height:400px;"></div>
+      </div>
     </div>
+  </div>
 
-    <div class="container">
-        <div class="dashboard-box">
-            <h3>Trânsito Atual na Região da SEPLAG-CE</h3>
-            <div id="map"></div>
-        </div>
-
-        <div class="dashboard-box">
-            <h3>Tempo Médio de Deslocamento</h3>
-            <div id="tempo-deslocamento"></div>
-        </div>
-
-        <div class="dashboard-box">
-            <h3>Linhas de Ônibus Próximas</h3>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Linha</th>
-                        <th>Próximos Horários</th>
-                        <th>Distância</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>011 - Circular</td>
-                        <td>15:30, 15:45, 16:00</td>
-                        <td>100m</td>
-                    </tr>
-                    <tr>
-                        <td>052 - Messejana/Centro</td>
-                        <td>15:35, 15:55, 16:15</td>
-                        <td>150m</td>
-                    </tr>
-                    <tr>
-                        <td>073 - Papicu/Centro</td>
-                        <td>15:40, 16:00, 16:20</td>
-                        <td>200m</td>
-                    </tr>
-                    <tr>
-                        <td>099 - Siqueira/Papicu</td>
-                        <td>15:50, 16:10, 16:30</td>
-                        <td>250m</td>
-                    </tr>
-                    <tr>
-                        <td>311 - Antônio Bezerra/Papicu</td>
-                        <td>15:45, 16:05, 16:25</td>
-                        <td>300m</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <div style="text-align: center;">
-            <a href="index.html" class="back-button">Voltar para Dashboards</a>
-        </div>
-
-        <div class="footer">
-            <p>Este dashboard foi desenvolvido para o tour virtual Matterport da SEPLAG-CE.</p>
-        </div>
+  <div class="dashboard-row">
+    <div class="dashboard-col">
+      <div class="dashboard-box">
+        <h3>Tempo Médio de Deslocamento</h3>
+        <div id="tempo-deslocamento" style="width:100%; height:300px;"></div>
+      </div>
     </div>
+  </div>
 
-    <script>
-        // Atualizar data
-        document.getElementById('update-date').textContent = new Date().toLocaleDateString('pt-BR', {
-            day: '2-digit',
-            month: '2-digit',
-            year: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit'
-        });
+  <div class="dashboard-row">
+    <div class="dashboard-col">
+      <div class="dashboard-box">
+        <h3>Linhas de Ônibus Próximas</h3>
+        <table class="bus-table">
+          <thead>
+            <tr>
+              <th>Linha</th>
+              <th>Próximos Horários</th>
+              <th>Distância</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>011 - Circular</td><td>15:30, 15:45, 16:00</td><td>100m</td></tr>
+            <tr><td>052 - Messejana/Centro</td><td>15:35, 15:55, 16:15</td><td>150m</td></tr>
+            <tr><td>073 - Papicu/Centro</td><td>15:40, 16:00, 16:20</td><td>200m</td></tr>
+            <tr><td>099 - Siqueira/Papicu</td><td>15:50, 16:10, 16:30</td><td>250m</td></tr>
+            <tr><td>108 - Parangaba/Papicu</td><td>16:00, 16:20, 16:40</td><td>300m</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
 
-        // Inicializar Mapa HERE
-        var platform = new H.service.Platform({
-            apikey: 'kEhxcp7sQl0hf7PuQv9cZGPrY4lIKA2FmF5OL9lecKhA'  // SUA CHAVE AQUI
-        });
+  <div style="text-align: center;">
+    <a href="index.html" class="back-button">Voltar para Dashboards</a>
+  </div>
 
-        var defaultLayers = platform.createDefaultLayers();
+  <div class="footer">
+    <p>Este dashboard foi desenvolvido para o tour virtual Matterport da SEPLAG-CE.</p>
+  </div>
 
-        var map = new H.Map(
-            document.getElementById('map'),
-            defaultLayers.vector.normal.map,
-            {
-                zoom: 16,
-                center: { lat: -3.809204, lng: -38.491068 }
-            }
-        );
+</div>
 
-        // Layer de Trânsito
-        var trafficLayer = platform.getMapLayers().createLayer('traffic', { traffic: 'flow' });
-        map.addLayer(trafficLayer);
+<!-- Scripts principais -->
+<script>
+  // Atualizar data
+  function atualizarDataHora() {
+    document.getElementById('update-date').textContent = new Date().toLocaleDateString('pt-BR', {
+      day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit'
+    });
+  }
+  atualizarDataHora();
 
-        // Enable Events
-        var behavior = new H.mapevents.Behavior(new H.mapevents.MapEvents(map));
-        var ui = H.ui.UI.createDefault(map, defaultLayers);
+  // Spinner e mensagem
+  function mostrarLoading() { document.getElementById('loading-spinner').style.display = 'block'; }
+  function esconderLoading() { document.getElementById('loading-spinner').style.display = 'none'; }
+  function mostrarMensagemSucesso() {
+    const msg = document.getElementById('success-message');
+    msg.style.display = 'block';
+    setTimeout(() => { msg.style.display = 'none'; }, 3000);
+  }
 
-        // Gráfico de Tempo de Deslocamento
-        const bairros = ["Aldeota", "Messejana", "Centro", "Siqueira", "Papicu"];
-        const tempos = [10, 25, 15, 30, 12];
+  // Mapa HERE
+  var platform = new H.service.Platform({ apikey: 'kEhxcp7sQl0hf7PuQv9cZGPrY4lIKA2FmF5OL9lecKhA' });
+  var defaultLayers = platform.createDefaultLayers();
+  var map = new H.Map(document.getElementById('map'), defaultLayers.vector.normal.map, {
+    zoom: 16,
+    center: { lat: -3.809204, lng: -38.491068 }
+  });
+  var behavior = new H.mapevents.Behavior(new H.mapevents.MapEvents(map));
+  var ui = H.ui.UI.createDefault(map, defaultLayers);
 
-        const tempoDeslocamentoData = [{
-            x: bairros,
-            y: tempos,
-            type: 'bar',
-            marker: {
-                color: '#cc6600'
-            }
-        }];
+  var trafficProvider = platform.getTrafficService();
+  var trafficLayer = trafficProvider.createTileLayer(trafficProvider.getTrafficTileProvider({ style: 'flow' }));
+  map.addLayer(trafficLayer);
 
-        const tempoDeslocamentoLayout = {
-            yaxis: { title: 'Tempo (min)' },
-            margin: { t: 30 }
-        };
+  function atualizarTrafego() {
+    mostrarLoading();
+    setTimeout(() => {
+      map.removeLayer(trafficLayer);
+      trafficLayer = trafficProvider.createTileLayer(trafficProvider.getTrafficTileProvider({ style: 'flow' }));
+      map.addLayer(trafficLayer);
+      esconderLoading();
+      mostrarMensagemSucesso();
+    }, 2000);
+  }
 
-        Plotly.newPlot('tempo-deslocamento', tempoDeslocamentoData, tempoDeslocamentoLayout);
-    </script>
+  setInterval(atualizarTrafego, 300000); // Atualiza a cada 5 minutos
+
+  // Gráfico de Tempo de Deslocamento
+  function desenharGraficoTempo() {
+    const bairros = ["Aldeota", "Messejana", "Centro", "Siqueira", "Papicu"];
+    const tempos = [10, 25, 15, 30, 12];
+    Plotly.newPlot('tempo-deslocamento', [{
+      x: bairros, y: tempos, type: 'bar', marker: { color: '#cc6600' }
+    }], {
+      margin: { t: 30 },
+      yaxis: { title: 'Tempo (minutos)' }
+    });
+  }
+  desenharGraficoTempo();
+</script>
+
 </body>
 </html>
+
