@@ -5,12 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard de Mobilidade Urbana - SEPLAG-CE</title>
 
-    <!-- HERE Maps API -->
     <script src="https://js.api.here.com/v3/3.1/mapsjs-core.js"></script>
     <script src="https://js.api.here.com/v3/3.1/mapsjs-service.js"></script>
-    <script src="https://js.api.here.com/v3/3.1/mapsjs-ui.js"></script>
     <script src="https://js.api.here.com/v3/3.1/mapsjs-mapevents.js"></script>
+    <script src="https://js.api.here.com/v3/3.1/mapsjs-ui.js"></script>
     <link rel="stylesheet" href="https://js.api.here.com/v3/3.1/mapsjs-ui.css" />
+
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 
     <style>
         body {
@@ -50,6 +51,13 @@
             font-size: 12px;
             color: #666;
         }
+        #map {
+            width: 100%;
+            height: 400px;
+            background: #e0e0e0;
+            margin-bottom: 30px;
+            border-radius: 8px;
+        }
         .dashboard-box {
             background-color: #fff;
             border-radius: 5px;
@@ -57,14 +65,28 @@
             padding: 20px;
             margin-bottom: 30px;
         }
-        #map {
+        h3 {
+            margin-top: 0;
+            text-align: center;
+            color: #cc6600;
+            margin-bottom: 20px;
+        }
+        table {
             width: 100%;
-            height: 500px;
-            border-radius: 5px;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #fff2e6;
+            color: #cc6600;
         }
         .footer {
             text-align: center;
-            margin-top: 50px;
+            margin-top: 30px;
             color: #666;
             font-size: 14px;
         }
@@ -80,11 +102,10 @@
         }
     </style>
 </head>
-
 <body>
     <div class="header">
         <div class="header-left">
-            <img src="RBIM.png" alt="RBIM Logo">
+            <img src="RBIM.png" alt="SEPLAG-CE Logo">
             <h1>Mobilidade Urbana</h1>
         </div>
         <div class="update-info">
@@ -94,8 +115,53 @@
 
     <div class="container">
         <div class="dashboard-box">
-            <h3 style="text-align:center; color:#cc6600;">Trânsito Atual na Região da SEPLAG-CE</h3>
+            <h3>Trânsito Atual na Região da SEPLAG-CE</h3>
             <div id="map"></div>
+        </div>
+
+        <div class="dashboard-box">
+            <h3>Tempo Médio de Deslocamento</h3>
+            <div id="tempo-deslocamento"></div>
+        </div>
+
+        <div class="dashboard-box">
+            <h3>Linhas de Ônibus Próximas</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Linha</th>
+                        <th>Próximos Horários</th>
+                        <th>Distância</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>011 - Circular</td>
+                        <td>15:30, 15:45, 16:00</td>
+                        <td>100m</td>
+                    </tr>
+                    <tr>
+                        <td>052 - Messejana/Centro</td>
+                        <td>15:35, 15:55, 16:15</td>
+                        <td>150m</td>
+                    </tr>
+                    <tr>
+                        <td>073 - Papicu/Centro</td>
+                        <td>15:40, 16:00, 16:20</td>
+                        <td>200m</td>
+                    </tr>
+                    <tr>
+                        <td>099 - Siqueira/Papicu</td>
+                        <td>15:50, 16:10, 16:30</td>
+                        <td>250m</td>
+                    </tr>
+                    <tr>
+                        <td>311 - Antônio Bezerra/Papicu</td>
+                        <td>15:45, 16:05, 16:25</td>
+                        <td>300m</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
 
         <div style="text-align: center;">
@@ -108,7 +174,7 @@
     </div>
 
     <script>
-        // Atualizar a data
+        // Atualizar data
         document.getElementById('update-date').textContent = new Date().toLocaleDateString('pt-BR', {
             day: '2-digit',
             month: '2-digit',
@@ -117,36 +183,49 @@
             minute: '2-digit'
         });
 
-        // Inicializar o mapa HERE
-        const platform = new H.service.Platform({
-            apikey: 'kEhxcp7sQl0hf7PuQv9cZGPrY4IKA2Fm5OL9IecKhA'
+        // Inicializar Mapa HERE
+        var platform = new H.service.Platform({
+            apikey: 'kEhxcp7sQl0hf7PuQv9cZGPrY4lIKA2FmF5OL9lecKhA'  // SUA CHAVE AQUI
         });
 
-        const defaultLayers = platform.createDefaultLayers();
+        var defaultLayers = platform.createDefaultLayers();
 
-        const map = new H.Map(
+        var map = new H.Map(
             document.getElementById('map'),
             defaultLayers.vector.normal.map,
             {
-                zoom: 15,
-                center: { lat: -3.773734, lng: -38.523300 } // Localização aproximada SEPLAG-CE Fortaleza
+                zoom: 16,
+                center: { lat: -3.809204, lng: -38.491068 }
             }
         );
 
-        // Habilitar comportamentos padrão
-        const behavior = new H.mapevents.Behavior(new H.mapevents.MapEvents(map));
-        const ui = H.ui.UI.createDefault(map, defaultLayers);
-
-        // Adicionar camada de trânsito
-        const trafficLayer = platform.getMapTileService({type: 'traffic'}).createTileLayer(
-            'flow',
-            'normal.day',
-            256,
-            'png8'
-        );
+        // Layer de Trânsito
+        var trafficLayer = platform.getMapLayers().createLayer('traffic', { traffic: 'flow' });
         map.addLayer(trafficLayer);
 
+        // Enable Events
+        var behavior = new H.mapevents.Behavior(new H.mapevents.MapEvents(map));
+        var ui = H.ui.UI.createDefault(map, defaultLayers);
+
+        // Gráfico de Tempo de Deslocamento
+        const bairros = ["Aldeota", "Messejana", "Centro", "Siqueira", "Papicu"];
+        const tempos = [10, 25, 15, 30, 12];
+
+        const tempoDeslocamentoData = [{
+            x: bairros,
+            y: tempos,
+            type: 'bar',
+            marker: {
+                color: '#cc6600'
+            }
+        }];
+
+        const tempoDeslocamentoLayout = {
+            yaxis: { title: 'Tempo (min)' },
+            margin: { t: 30 }
+        };
+
+        Plotly.newPlot('tempo-deslocamento', tempoDeslocamentoData, tempoDeslocamentoLayout);
     </script>
 </body>
 </html>
-
