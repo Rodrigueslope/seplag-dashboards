@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboards SEPLAG-CE - Implantação GitHub Pages</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        h1 {
+            color: #0066cc;
+            border-bottom: 2px solid #0066cc;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #009933;
+            margin-top: 30px;
+        }
+        h3 {
+            color: #666;
+        }
+        code {
+            background-color: #f5f5f5;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-family: monospace;
+        }
+        pre {
+            background-color: #f5f5f5;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        .note {
+            background-color: #e6f7ff;
+            border-left: 4px solid #1890ff;
+            padding: 10px 15px;
+            margin: 20px 0;
+        }
+        .warning {
+            background-color: #fff7e6;
+            border-left: 4px solid #fa8c16;
+            padding: 10px 15px;
+            margin: 20px 0;
+        }
+        .step {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px dashed #ddd;
+        }
+    </style>
+</head>
+<body>
+    <h1>Guia de Implantação dos Dashboards SEPLAG-CE no GitHub Pages</h1>
+    
+    <p>Este documento fornece instruções detalhadas para implantar os dashboards da SEPLAG-CE no GitHub Pages e obter links permanentes para integração no tour virtual Matterport.</p>
+
+    <div class="note">
+        <strong>Nota:</strong> Este guia assume que você possui uma conta no GitHub. Se ainda não tiver uma, será necessário criar uma em <a href="https://github.com/join" target="_blank">github.com/join</a>.
+    </div>
+
+    <div class="step">
+        <h2>Passo 1: Criar um novo repositório no GitHub</h2>
+        <ol>
+            <li>Acesse <a href="https://github.com/new" target="_blank">github.com/new</a></li>
+            <li>Nomeie o repositório como <code>seplag-dashboards</code></li>
+            <li>Adicione uma descrição opcional (ex: "Dashboards interativos para o tour virtual da SEPLAG-CE")</li>
+            <li>Mantenha o repositório como <strong>Público</strong> (necessário para GitHub Pages gratuito)</li>
+            <li>Marque a opção "Add a README file"</li>
+            <li>Clique em "Create repository"</li>
+        </ol>
+    </div>
+
+    <div class="step">
+        <h2>Passo 2: Fazer upload dos arquivos HTML</h2>
+        <ol>
+            <li>No seu repositório recém-criado, clique no botão "Add file" e selecione "Upload files"</li>
+            <li>Arraste e solte os seguintes arquivos HTML ou use o seletor de arquivos para carregá-los:
+                <ul>
+                    <li><code>index.html</code> (página inicial)</li>
+                    <li><code>clima.html</code> (dashboard de condições climáticas)</li>
+                    <li><code>ar.html</code> (dashboard de qualidade do ar)</li>
+                    <li><code>mobilidade.html</code> (dashboard de mobilidade urbana)</li>
+                    <li><code>energia.html</code> (dashboard de consumo energético)</li>
+                </ul>
+            </li>
+            <li>Adicione uma mensagem de commit (ex: "Adicionar arquivos dos dashboards")</li>
+            <li>Clique em "Commit changes"</li>
+        </ol>
+    </div>
+
+    <div class="step">
+        <h2>Passo 3: Configurar o GitHub Pages</h2>
+        <ol>
+            <li>No seu repositório, clique na aba "Settings"</li>
+            <li>No menu lateral esquerdo, clique em "Pages"</li>
+            <li>Na seção "Source", selecione "main" no dropdown "Branch"</li>
+            <li>Clique em "Save"</li>
+            <li>Aguarde alguns minutos para que o GitHub Pages publique seu site</li>
+            <li>Após a publicação, você verá uma mensagem indicando que seu site está publicado em <code>https://[seu-usuario].github.io/seplag-dashboards/</code></li>
+        </ol>
+    </div>
+
+    <div class="step">
+        <h2>Passo 4: Verificar a implantação</h2>
+        <ol>
+            <li>Acesse o link fornecido pelo GitHub Pages (<code>https://[seu-usuario].github.io/seplag-dashboards/</code>)</li>
+            <li>Verifique se a página inicial carrega corretamente</li>
+            <li>Teste cada um dos dashboards clicando nos botões "Acessar Dashboard"</li>
+            <li>Verifique se as visualizações interativas funcionam corretamente</li>
+            <li>Teste a navegação entre os dashboards e a página inicial</li>
+        </ol>
+    </div>
+
+    <div class="step">
+        <h2>Passo 5: Obter os links para integração no Matterport</h2>
+        <p>Após a implantação bem-sucedida, você terá os seguintes links permanentes para integração no tour virtual Matterport:</p>
+        
+        <h3>Links para os Dashboards:</h3>
+        <ul>
+            <li><strong>Página Inicial:</strong> <code>https://[seu-usuario].github.io/seplag-dashboards/</code></li>
+            <li><strong>Dashboard de Condições Climáticas:</strong> <code>https://[seu-usuario].github.io/seplag-dashboards/clima.html</code></li>
+            <li><strong>Dashboard de Qualidade do Ar:</strong> <code>https://[seu-usuario].github.io/seplag-dashboards/ar.html</code></li>
+            <li><strong>Dashboard de Mobilidade Urbana:</strong> <code>https://[seu-usuario].github.io/seplag-dashboards/mobilidade.html</code></li>
+            <li><strong>Dashboard de Consumo Energético:</strong> <code>https://[seu-usuario].github.io/seplag-dashboards/energia.html</code></li>
+        </ul>
+    </div>
+
+    <div class="step">
+        <h2>Passo 6: Integrar os links no tour virtual Matterport</h2>
+        <ol>
+            <li>Acesse o editor do Matterport para o tour virtual da SEPLAG-CE</li>
+            <li>Adicione Mattertags nos pontos estratégicos do tour</li>
+            <li>Configure cada Mattertag para abrir o link do dashboard correspondente:
+                <ul>
+                    <li>Selecione a opção "Link" ao configurar a Mattertag</li>
+                    <li>Cole o URL do dashboard correspondente</li>
+                    <li>Defina um título apropriado (ex: "Condições Climáticas")</li>
+                    <li>Adicione uma descrição opcional</li>
+                </ul>
+            </li>
+            <li>Salve as alterações no tour virtual</li>
+            <li>Teste a integração acessando o tour e clicando nas Mattertags</li>
+        </ol>
+    </div>
+
+    <div class="warning">
+        <strong>Importante:</strong> Os dashboards estão configurados com dados simulados. Para conectá-los a dados reais em tempo real, será necessário modificar os arquivos HTML para fazer requisições às APIs correspondentes (OpenWeatherMap, AQICN, etc.) e atualizar o repositório.
+    </div>
+
+    <h2>Manutenção e Atualização</h2>
+    <p>Para atualizar os dashboards no futuro:</p>
+    <ol>
+        <li>Faça as alterações necessárias nos arquivos HTML</li>
+        <li>Acesse seu repositório no GitHub</li>
+        <li>Navegue até o arquivo que deseja atualizar</li>
+        <li>Clique no ícone de lápis para editar o arquivo</li>
+        <li>Faça as alterações necessárias</li>
+        <li>Adicione uma mensagem de commit descrevendo as alterações</li>
+        <li>Clique em "Commit changes"</li>
+        <li>As alterações serão automaticamente publicadas no GitHub Pages após alguns minutos</li>
+    </ol>
+
+    <p>Este guia foi preparado como parte do projeto de dashboards interativos para o tour virtual da SEPLAG-CE.</p>
+</body>
+</html>

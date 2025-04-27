@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard de Qualidade do Ar - SEPLAG-CE</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px;
+            background-color: #fff;
+            border-bottom: 1px solid #ddd;
+            margin-bottom: 30px;
+        }
+        .header-left {
+            display: flex;
+            align-items: center;
+        }
+        .header-left img {
+            height: 50px;
+            margin-right: 15px;
+        }
+        .header-left h1 {
+            margin: 0;
+            font-size: 24px;
+            color: #333;
+        }
+        .update-info {
+            font-size: 12px;
+            color: #666;
+        }
+        .dashboard-row {
+            display: flex;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+        }
+        .dashboard-col {
+            width: 48%;
+            margin-bottom: 20px;
+        }
+        .dashboard-col:nth-child(odd) {
+            margin-right: 4%;
+        }
+        .dashboard-box {
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            padding: 20px;
+            height: 100%;
+        }
+        .dashboard-box h3 {
+            margin-top: 0;
+            text-align: center;
+            color: #009933;
+            margin-bottom: 20px;
+        }
+        .aqi-status {
+            text-align: center;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            font-weight: bold;
+            font-size: 18px;
+        }
+        .aqi-good {
+            background-color: #e6ffe6;
+            color: #009933;
+        }
+        .aqi-moderate {
+            background-color: #ffffcc;
+            color: #999900;
+        }
+        .aqi-unhealthy {
+            background-color: #ffe6e6;
+            color: #cc0000;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 50px;
+            color: #666;
+            font-size: 14px;
+        }
+        .back-button {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #009933;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        @media (max-width: 768px) {
+            .dashboard-col {
+                width: 100%;
+                margin-right: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-left">
+            <img src="https://www.seplag.ce.gov.br/wp-content/uploads/sites/14/2019/01/seplag-1.png" alt="SEPLAG-CE Logo">
+            <h1>Qualidade do Ar</h1>
+        </div>
+        <div class="update-info">
+            Atualizado em: <span id="update-date"></span>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="dashboard-row">
+            <div class="dashboard-col">
+                <div class="dashboard-box">
+                    <h3>Índice de Qualidade do Ar (AQI)</h3>
+                    <div id="aqi-gauge"></div>
+                    <div class="aqi-status aqi-good">Qualidade do Ar: Boa</div>
+                </div>
+            </div>
+            <div class="dashboard-col">
+                <div class="dashboard-box">
+                    <h3>Concentração de PM2.5 (μg/m³)</h3>
+                    <div id="pm25-gauge"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="dashboard-row">
+            <div class="dashboard-col">
+                <div class="dashboard-box">
+                    <h3>Tendência das Últimas 24 Horas</h3>
+                    <div id="tendencia-chart"></div>
+                </div>
+            </div>
+            <div class="dashboard-col">
+                <div class="dashboard-box">
+                    <h3>Concentração de Poluentes</h3>
+                    <div id="poluentes-chart"></div>
+                </div>
+            </div>
+        </div>
+
+        <div style="text-align: center;">
+            <a href="index.html" class="back-button">Voltar para Dashboards</a>
+        </div>
+
+        <div class="footer">
+            <p>Este dashboard foi desenvolvido para o tour virtual Matterport da SEPLAG-CE.</p>
+        </div>
+    </div>
+
+    <script>
+        // Atualizar a data de atualização
+        document.getElementById('update-date').textContent = new Date().toLocaleDateString('pt-BR', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+
+        // Dados simulados
+        const aqi = 45;
+        const pm25 = 12;
+        
+        // Criar gráfico de AQI
+        const aqiGauge = {
+            type: "indicator",
+            mode: "gauge+number",
+            value: aqi,
+            title: { text: "Índice de Qualidade do Ar" },
+            gauge: {
+                axis: { range: [0, 300], tickwidth: 1 },
+                bar: { color: "green" },
+                steps: [
+                    { range: [0, 50], color: "lightgreen" },
+                    { range: [50, 100], color: "yellow" },
+                    { range: [100, 150], color: "orange" },
+                    { range: [150, 200], color: "red" },
+                    { range: [200, 300], color: "purple" }
+                ],
+                threshold: {
+                    line: { color: "red", width: 4 },
+                    thickness: 0.75,
+                    value: 100
+                }
+            }
+        };
+
+        Plotly.newPlot('aqi-gauge', [aqiGauge], {
+            margin: { t: 50, b: 20, l: 20, r: 20 },
+            height: 250
+        });
+
+        // Criar gráfico de PM2.5
+        const pm25Gauge = {
+            type: "indicator",
+            mode: "gauge+number",
+            value: pm25,
+            title: { text: "PM2.5 (μg/m³)" },
+            gauge: {
+                axis: { range: [0, 100], tickwidth: 1 },
+                bar: { color: "green" },
+                steps: [
+                    { range: [0, 12], color: "lightgreen" },
+                    { range: [12, 35.4], color: "yellow" },
+                    { range: [35.4, 55.4], color: "orange" },
+                    { range: [55.4, 150.4], color: "red" },
+                    { range: [150.4, 250.4], color: "purple" }
+                ],
+                threshold: {
+                    line: { color: "red", width: 4 },
+                    thickness: 0.75,
+                    value: 35.4
+                }
+            }
+        };
+
+        Plotly.newPlot('pm25-gauge', [pm25Gauge], {
+            margin: { t: 50, b: 20, l: 20, r: 20 },
+            height: 250
+        });
+
+        // Dados para tendência 24h
+        const horas = Array.from({length: 24}, (_, i) => i);
+        const aqiValues = [40, 42, 45, 48, 50, 52, 55, 58, 60, 58, 55, 50, 48, 45, 42, 40, 38, 35, 32, 30, 35, 38, 40, 45];
+
+        // Criar gráfico de tendência
+        const tendenciaData = [{
+            x: horas,
+            y: aqiValues,
+            type: 'scatter',
+            mode: 'lines',
+            fill: 'tozeroy',
+            line: {
+                color: 'green',
+                width: 2
+            },
+            fillcolor: 'rgba(0, 153, 51, 0.2)'
+        }];
+
+        const tendenciaLayout = {
+            xaxis: {
+                title: 'Horas atrás'
+            },
+            yaxis: {
+                title: 'AQI',
+                range: [0, 70]
+            },
+            margin: { t: 20, b: 40, l: 50, r: 20 },
+            height: 300
+        };
+
+        Plotly.newPlot('tendencia-chart', tendenciaData, tendenciaLayout);
+
+        // Dados para poluentes
+        const poluentes = ["PM2.5", "PM10", "O3", "NO2", "SO2", "CO"];
+        const valores = [12, 25, 35, 15, 5, 8];
+        const limites = [35, 50, 100, 100, 75, 35];
+
+        // Criar gráfico de poluentes
+        const poluentesData = [{
+            x: valores,
+            y: poluentes,
+            type: 'bar',
+            orientation: 'h',
+            marker: {
+                color: 'green'
+            }
+        }];
+
+        const poluentesLayout = {
+            xaxis: {
+                title: 'Concentração'
+            },
+            margin: { t: 20, b: 40, l: 80, r: 20 },
+            height: 300,
+            shapes: limites.map((limite, i) => ({
+                type: 'line',
+                x0: limite,
+                x1: limite,
+                y0: i - 0.4,
+                y1: i + 0.4,
+                line: {
+                    color: 'red',
+                    width: 2,
+                    dash: 'dash'
+                }
+            }))
+        };
+
+        Plotly.newPlot('poluentes-chart', poluentesData, poluentesLayout);
+    </script>
+</body>
+</html>

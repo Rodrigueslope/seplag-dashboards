@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard de Consumo Energético - SEPLAG-CE</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px;
+            background-color: #fff;
+            border-bottom: 1px solid #ddd;
+            margin-bottom: 30px;
+        }
+        .header-left {
+            display: flex;
+            align-items: center;
+        }
+        .header-left img {
+            height: 50px;
+            margin-right: 15px;
+        }
+        .header-left h1 {
+            margin: 0;
+            font-size: 24px;
+            color: #333;
+        }
+        .update-info {
+            font-size: 12px;
+            color: #666;
+        }
+        .dashboard-row {
+            display: flex;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+        }
+        .dashboard-col {
+            width: 48%;
+            margin-bottom: 20px;
+        }
+        .dashboard-col:nth-child(odd) {
+            margin-right: 4%;
+        }
+        .dashboard-box {
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            padding: 20px;
+            height: 100%;
+        }
+        .dashboard-box h3 {
+            margin-top: 0;
+            text-align: center;
+            color: #660066;
+            margin-bottom: 20px;
+        }
+        .economia-info {
+            text-align: center;
+            padding: 15px;
+            background-color: #f9e6ff;
+            border-radius: 5px;
+            margin-top: 20px;
+            color: #660066;
+            font-weight: bold;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 50px;
+            color: #666;
+            font-size: 14px;
+        }
+        .back-button {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #660066;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        @media (max-width: 768px) {
+            .dashboard-col {
+                width: 100%;
+                margin-right: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-left">
+            <img src="https://www.seplag.ce.gov.br/wp-content/uploads/sites/14/2019/01/seplag-1.png" alt="SEPLAG-CE Logo">
+            <h1>Consumo Energético</h1>
+        </div>
+        <div class="update-info">
+            Atualizado em: <span id="update-date"></span>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="dashboard-row">
+            <div class="dashboard-col">
+                <div class="dashboard-box">
+                    <h3>Consumo Energético Atual</h3>
+                    <div id="consumo-gauge"></div>
+                    <div class="economia-info">↓ 15.8% em relação ao ano anterior</div>
+                </div>
+            </div>
+            <div class="dashboard-col">
+                <div class="dashboard-box">
+                    <h3>Variação do Consumo ao Longo do Ano</h3>
+                    <div id="variacao-chart"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="dashboard-row">
+            <div class="dashboard-col">
+                <div class="dashboard-box">
+                    <h3>Comparativo por Tipo de Consumidor</h3>
+                    <div id="comparativo-chart"></div>
+                </div>
+            </div>
+            <div class="dashboard-col">
+                <div class="dashboard-box">
+                    <h3>Eficiência Energética Comparativa</h3>
+                    <div id="eficiencia-chart"></div>
+                </div>
+            </div>
+        </div>
+
+        <div style="text-align: center;">
+            <a href="index.html" class="back-button">Voltar para Dashboards</a>
+        </div>
+
+        <div class="footer">
+            <p>Este dashboard foi desenvolvido para o tour virtual Matterport da SEPLAG-CE.</p>
+        </div>
+    </div>
+
+    <script>
+        // Atualizar a data de atualização
+        document.getElementById('update-date').textContent = new Date().toLocaleDateString('pt-BR', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+
+        // Dados simulados
+        const consumoAtual = 320;
+        const consumoReferencia = 380;
+        
+        // Criar gráfico de consumo atual
+        const consumoGauge = {
+            type: "indicator",
+            mode: "gauge+number",
+            value: consumoAtual,
+            title: { text: "Consumo (kWh)" },
+            gauge: {
+                axis: { range: [0, 600], tickwidth: 1 },
+                bar: { color: "green" },
+                steps: [
+                    { range: [0, 200], color: "lightgreen" },
+                    { range: [200, 400], color: "lightyellow" },
+                    { range: [400, 600], color: "lightcoral" }
+                ],
+                threshold: {
+                    line: { color: "red", width: 4 },
+                    thickness: 0.75,
+                    value: consumoReferencia
+                }
+            }
+        };
+
+        Plotly.newPlot('consumo-gauge', [consumoGauge], {
+            margin: { t: 50, b: 20, l: 20, r: 20 },
+            height: 250
+        });
+
+        // Dados para variação anual
+        const meses = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"];
+        const consumoAtualAno = [350, 340, 330, 320, 310, 300, 310, 320, 330, 340, 350, 360];
+        const consumoAnteriorAno = [370, 360, 350, 340, 330, 320, 330, 340, 350, 360, 370, 380];
+
+        // Criar gráfico de variação anual
+        const variacaoData = [
+            {
+                x: meses,
+                y: consumoAtualAno,
+                type: 'scatter',
+                mode: 'lines+markers',
+                name: '2025',
+                line: {
+                    color: 'green',
+                    width: 2
+                },
+                marker: {
+                    size: 8
+                }
+            },
+            {
+                x: meses,
+                y: consumoAnteriorAno,
+                type: 'scatter',
+                mode: 'lines+markers',
+                name: '2024',
+                line: {
+                    color: 'gray',
+                    width: 2,
+                    dash: 'dash'
+                },
+                marker: {
+                    size: 8
+                }
+            }
+        ];
+
+        const variacaoLayout = {
+            xaxis: {
+                title: 'Mês'
+            },
+            yaxis: {
+                title: 'Consumo (kWh)',
+                range: [290, 390]
+            },
+            legend: {
+                orientation: 'h',
+                y: 1.1
+            },
+            margin: { t: 40, b: 40, l: 50, r: 20 },
+            height: 300
+        };
+
+        Plotly.newPlot('variacao-chart', variacaoData, variacaoLayout);
+
+        // Dados para comparativo por tipo
+        const tipos = ["Residencial", "Comercial", "Público", "Industrial"];
+        const consumoTipos = [320, 450, 380, 520];
+        const coresTipos = ['green', 'orange', 'blue', 'red'];
+
+        // Criar gráfico de comparativo por tipo
+        const comparativoData = [{
+            x: tipos,
+            y: consumoTipos,
+            type: 'bar',
+            marker: {
+                color: coresTipos
+            }
+        }];
+
+        const comparativoLayout = {
+            xaxis: {
+                title: 'Tipo de Consumidor'
+            },
+            yaxis: {
+                title: 'Consumo Médio (kWh)'
+            },
+            margin: { t: 20, b: 40, l: 50, r: 20 },
+            height: 300
+        };
+
+        Plotly.newPlot('comparativo-chart', comparativoData, comparativoLayout);
+
+        // Dados para eficiência energética
+        const regioes = ["SEPLAG-CE", "Centro", "Aldeota", "Messejana", "Papicu"];
+        const eficiencia = [85, 70, 75, 65, 80];
+        const coresEficiencia = ['darkgreen', 'green', 'green', 'green', 'green'];
+
+        // Criar gráfico de eficiência energética
+        const eficienciaData = [{
+            x: regioes,
+            y: eficiencia,
+            type: 'bar',
+            marker: {
+                color: coresEficiencia
+            }
+        }];
+
+        const eficienciaLayout = {
+            xaxis: {
+                title: 'Região'
+            },
+            yaxis: {
+                title: 'Índice de Eficiência (%)',
+                range: [0, 100]
+            },
+            shapes: [{
+                type: 'line',
+                x0: -0.5,
+                x1: 4.5,
+                y0: 75,
+                y1: 75,
+                line: {
+                    color: 'red',
+                    width: 2,
+                    dash: 'dash'
+                }
+            }],
+            margin: { t: 20, b: 40, l: 50, r: 20 },
+            height: 300
+        };
+
+        Plotly.newPlot('eficiencia-chart', eficienciaData, eficienciaLayout);
+    </script>
+</body>
+</html>
