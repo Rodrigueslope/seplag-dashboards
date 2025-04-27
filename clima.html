@@ -106,7 +106,18 @@
 
 <body>
 
-  <!-- NOVO: Gráfico de Vento no TOPO -->
+  <!-- HEADER COM LOGO CORRETA -->
+  <div class="header">
+    <div class="header-left">
+      <img src="RBIM.png" alt="Logo RBIM">
+      <h1>Condições Climáticas</h1>
+    </div>
+    <div class="update-info">
+      Atualizado em: <span id="update-date"></span>
+    </div>
+  </div>
+
+  <!-- GRÁFICO DE VENTO -->
   <div class="container">
     <div class="dashboard-row">
       <div class="dashboard-col" style="width: 100%; margin-right: 0;">
@@ -116,22 +127,8 @@
         </div>
       </div>
     </div>
-  </div>
 
-  <!-- HEADER SEPLAG -->
-  <div class="header">
-    <div class="header-left">
-      <img src="https://www.seplag.ce.gov.br/wp-content/uploads/sites/14/2019/01/seplag-1.png" alt="SEPLAG-CE Logo">
-      <h1>Condições Climáticas</h1>
-    </div>
-    <div class="update-info">
-      Atualizado em: <span id="update-date"></span>
-    </div>
-  </div>
-
-  <!-- DASHBOARDS -->
-  <div class="container">
-
+    <!-- DASHBOARDS DE TEMPERATURA E UMIDADE -->
     <div class="dashboard-row">
       <div class="dashboard-col">
         <div class="dashboard-box">
@@ -148,6 +145,7 @@
       </div>
     </div>
 
+    <!-- CONDIÇÕES ATUAIS -->
     <div class="dashboard-row">
       <div class="dashboard-col" style="width: 100%; margin-right: 0;">
         <div class="dashboard-box">
@@ -200,11 +198,12 @@
         .then(response => response.json())
         .then(data => {
           const ventoReal = data.wind.speed;
-          const ventoOscilado = ventoReal + (Math.random() - 0.5) * 0.8; // Oscilação suave
+          const oscilar = (Math.random() - 0.5) * 1.2; // Aumentei a ondulação
+          const ventoComOscilacao = ventoReal + oscilar;
           const horaAtual = new Date().toISOString();
 
           tempoDados.push(horaAtual);
-          ventoDados.push(Math.max(0, ventoOscilado.toFixed(2))); // Evita valor negativo
+          ventoDados.push(Math.max(0, ventoComOscilacao.toFixed(2)));
 
           Plotly.update('vento-line-chart', {
             x: [tempoDados],
@@ -290,4 +289,3 @@
 
 </body>
 </html>
-
