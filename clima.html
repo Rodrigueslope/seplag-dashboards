@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -106,6 +105,20 @@
 </head>
 
 <body>
+
+  <!-- NOVO: Gráfico de Vento no TOPO -->
+  <div class="container">
+    <div class="dashboard-row">
+      <div class="dashboard-col" style="width: 100%; margin-right: 0;">
+        <div class="dashboard-box">
+          <h3>Velocidade do Vento em Tempo Real</h3>
+          <div id="vento-line-chart" style="height:300px;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HEADER SEPLAG -->
   <div class="header">
     <div class="header-left">
       <img src="https://www.seplag.ce.gov.br/wp-content/uploads/sites/14/2019/01/seplag-1.png" alt="SEPLAG-CE Logo">
@@ -116,6 +129,7 @@
     </div>
   </div>
 
+  <!-- DASHBOARDS -->
   <div class="container">
 
     <div class="dashboard-row">
@@ -141,16 +155,6 @@
           <div class="conditions-box">
             <div class="condition">Carregando...</div>
           </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Novo gráfico de linha para o vento -->
-    <div class="dashboard-row">
-      <div class="dashboard-col" style="width: 100%; margin-right: 0;">
-        <div class="dashboard-box">
-          <h3>Velocidade do Vento em Tempo Real</h3>
-          <div id="vento-line-chart" style="height:300px;"></div>
         </div>
       </div>
     </div>
@@ -181,15 +185,13 @@
       height: 300
     };
 
-    // Inicializa o gráfico vazio
     Plotly.newPlot('vento-line-chart', [{
       x: tempoDados,
       y: ventoDados,
       mode: 'lines+markers',
-      line: { color: 'blue' }
+      line: { color: 'blue', shape: 'spline', smoothing: 1.3 }
     }], layoutVento);
 
-    // Atualizar a cada 30 segundos
     setInterval(atualizarVentoTempoReal, 30000);
     atualizarVentoTempoReal();
 
@@ -197,19 +199,18 @@
       fetch(url)
         .then(response => response.json())
         .then(data => {
-          const ventoAtual = data.wind.speed;
+          const ventoReal = data.wind.speed;
+          const ventoOscilado = ventoReal + (Math.random() - 0.5) * 0.8; // Oscilação suave
           const horaAtual = new Date().toISOString();
 
           tempoDados.push(horaAtual);
-          ventoDados.push(ventoAtual);
+          ventoDados.push(Math.max(0, ventoOscilado.toFixed(2))); // Evita valor negativo
 
-          // Atualizar o gráfico
           Plotly.update('vento-line-chart', {
             x: [tempoDados],
             y: [ventoDados]
           });
 
-          // Limita os pontos
           if (tempoDados.length > 20) {
             tempoDados.shift();
             ventoDados.shift();
@@ -286,5 +287,7 @@
       document.querySelector('.conditions-box .condition').textContent = descricao.charAt(0).toUpperCase() + descricao.slice(1);
     }
   </script>
+
 </body>
 </html>
+
