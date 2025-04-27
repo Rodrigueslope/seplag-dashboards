@@ -1,170 +1,367 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard de Mobilidade Urbana - SEPLAG-CE</title>
-  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      background-color: #f8f9fa;
-    }
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 20px;
-    }
-    .header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 20px;
-      background-color: #fff;
-      border-bottom: 1px solid #ddd;
-      margin-bottom: 30px;
-    }
-    .header-left {
-      display: flex;
-      align-items: center;
-    }
-    .header-left img {
-      height: 50px;
-      margin-right: 15px;
-    }
-    .header-left h1 {
-      margin: 0;
-      font-size: 24px;
-      color: #333;
-    }
-    .update-info {
-      font-size: 12px;
-      color: #666;
-    }
-    .dashboard-box {
-      background-color: #fff;
-      border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-      padding: 20px;
-      margin-bottom: 30px;
-    }
-    h3 {
-      text-align: center;
-      color: #cc6600;
-      margin-bottom: 20px;
-    }
-    #mapa-fluxo {
-      height: 450px;
-    }
-    .footer {
-      text-align: center;
-      margin-top: 30px;
-      color: #666;
-      font-size: 14px;
-    }
-    .back-button {
-      display: inline-block;
-      margin-top: 20px;
-      padding: 10px 20px;
-      background-color: #cc6600;
-      color: white;
-      text-decoration: none;
-      border-radius: 5px;
-      font-weight: bold;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard de Mobilidade Urbana - SEPLAG-CE</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px;
+            background-color: #fff;
+            border-bottom: 1px solid #ddd;
+            margin-bottom: 30px;
+        }
+        .header-left {
+            display: flex;
+            align-items: center;
+        }
+        .header-left img {
+            height: 50px;
+            margin-right: 15px;
+        }
+        .header-left h1 {
+            margin: 0;
+            font-size: 24px;
+            color: #333;
+        }
+        .update-info {
+            font-size: 12px;
+            color: #666;
+        }
+        .dashboard-row {
+            display: flex;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+        }
+        .dashboard-col {
+            width: 48%;
+            margin-bottom: 20px;
+        }
+        .dashboard-col:nth-child(odd) {
+            margin-right: 4%;
+        }
+        .dashboard-box {
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            padding: 20px;
+            height: 100%;
+        }
+        .dashboard-box h3 {
+            margin-top: 0;
+            text-align: center;
+            color: #cc6600;
+            margin-bottom: 20px;
+        }
+        .bus-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        .bus-table th, .bus-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+        .bus-table th {
+            background-color: #fff2e6;
+            color: #cc6600;
+        }
+        .bus-table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 50px;
+            color: #666;
+            font-size: 14px;
+        }
+        .back-button {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #cc6600;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        @media (max-width: 768px) {
+            .dashboard-col {
+                width: 100%;
+                margin-right: 0;
+            }
+        }
+    </style>
 </head>
-
 <body>
-
-  <div class="header">
-    <div class="header-left">
-      <img src="RBIM.png" alt="SEPLAG-CE Logo">
-      <h1>Mobilidade Urbana</h1>
-    </div>
-    <div class="update-info">
-      Atualizado em: <span id="update-date"></span>
-    </div>
-  </div>
-
-  <div class="container">
-    <div class="dashboard-box">
-      <h3>Mapa de Fluxo de Trânsito - Região da SEPLAG-CE</h3>
-      <div id="mapa-fluxo"></div>
+    <div class="header">
+        <div class="header-left">
+            <img src="https://www.seplag.ce.gov.br/wp-content/uploads/sites/14/2019/01/seplag-1.png" alt="SEPLAG-CE Logo">
+            <h1>Mobilidade Urbana</h1>
+        </div>
+        <div class="update-info">
+            Atualizado em: <span id="update-date"></span>
+        </div>
     </div>
 
-    <div style="text-align: center;">
-      <a href="index.html" class="back-button">Voltar para Dashboards</a>
+    <div class="container">
+        <div class="dashboard-row">
+            <div class="dashboard-col">
+                <div class="dashboard-box">
+                    <h3>Mapa de Fluxo de Trânsito</h3>
+                    <div id="mapa-fluxo"></div>
+                </div>
+            </div>
+            <div class="dashboard-col">
+                <div class="dashboard-box">
+                    <h3>Tempo Médio de Deslocamento</h3>
+                    <div id="tempo-deslocamento"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="dashboard-row">
+            <div class="dashboard-col">
+                <div class="dashboard-box">
+                    <h3>Estatísticas de Sinistros</h3>
+                    <div id="estatisticas-sinistros"></div>
+                </div>
+            </div>
+            <div class="dashboard-col">
+                <div class="dashboard-box">
+                    <h3>Linhas de Ônibus Próximas</h3>
+                    <table class="bus-table">
+                        <thead>
+                            <tr>
+                                <th>Linha</th>
+                                <th>Próximos Horários</th>
+                                <th>Distância</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>011 - Circular</td>
+                                <td>15:30, 15:45, 16:00</td>
+                                <td>100m</td>
+                            </tr>
+                            <tr>
+                                <td>052 - Messejana/Centro</td>
+                                <td>15:35, 15:55, 16:15</td>
+                                <td>150m</td>
+                            </tr>
+                            <tr>
+                                <td>073 - Papicu/Centro</td>
+                                <td>15:40, 16:00, 16:20</td>
+                                <td>200m</td>
+                            </tr>
+                            <tr>
+                                <td>099 - Siqueira/Papicu</td>
+                                <td>15:50, 16:10, 16:30</td>
+                                <td>250m</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div style="text-align: center;">
+            <a href="index.html" class="back-button">Voltar para Dashboards</a>
+        </div>
+
+        <div class="footer">
+            <p>Este dashboard foi desenvolvido para o tour virtual Matterport da SEPLAG-CE.</p>
+        </div>
     </div>
 
-    <div class="footer">
-      <p>Este dashboard foi desenvolvido para o tour virtual Matterport da SEPLAG-CE.</p>
-    </div>
-  </div>
+    <script>
+        // Atualizar a data de atualização
+        document.getElementById('update-date').textContent = new Date().toLocaleDateString('pt-BR', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
 
-  <script>
-    // Atualizar data e hora
-    document.getElementById('update-date').textContent = new Date().toLocaleString('pt-BR', {
-      day: '2-digit', month: '2-digit', year: 'numeric',
-      hour: '2-digit', minute: '2-digit'
-    });
+        // Dados para mapa de fluxo (simulado com heatmap)
+        const size = 50;
+        const x = Array.from({length: size}, (_, i) => i);
+        const y = Array.from({length: size}, (_, i) => i);
+        const z = [];
+        
+        for (let i = 0; i < size; i++) {
+            const row = [];
+            for (let j = 0; j < size; j++) {
+                // Criar um padrão circular com centro mais intenso
+                const distFromCenter = Math.sqrt(Math.pow((i - size/2), 2) + Math.pow((j - size/2), 2));
+                const value = Math.exp(-distFromCenter / 10) + Math.random() * 0.1;
+                row.push(value);
+            }
+            z.push(row);
+        }
 
-    // Gerar dados simulados para mapa de fluxo
-    const size = 50;
-    const x = Array.from({length: size}, (_, i) => i);
-    const y = Array.from({length: size}, (_, i) => i);
-    const z = [];
+        // Criar mapa de fluxo
+        const mapaFluxoData = [{
+            z: z,
+            type: 'heatmap',
+            colorscale: [
+                [0, 'rgb(0, 255, 0)'],
+                [0.5, 'rgb(255, 255, 0)'],
+                [1, 'rgb(255, 0, 0)']
+            ],
+            showscale: true,
+            colorbar: {
+                title: 'Intensidade',
+                titleside: 'right'
+            }
+        }];
 
-    for (let i = 0; i < size; i++) {
-      const row = [];
-      for (let j = 0; j < size; j++) {
-        const distFromCenter = Math.sqrt(Math.pow((i - size/2), 2) + Math.pow((j - size/2), 2));
-        const value = Math.exp(-distFromCenter / 10) + Math.random() * 0.15; // Pequeno ruído para deixar mais bonito
-        row.push(value);
-      }
-      z.push(row);
-    }
+        const mapaFluxoLayout = {
+            annotations: [{
+                x: size/2,
+                y: size/2,
+                text: 'SEPLAG-CE',
+                showarrow: true,
+                arrowhead: 2,
+                arrowsize: 1,
+                arrowwidth: 2,
+                arrowcolor: '#000',
+                font: {
+                    color: '#fff',
+                    size: 14
+                },
+                bgcolor: '#0066cc',
+                bordercolor: '#0066cc',
+                borderwidth: 2,
+                borderpad: 4,
+                opacity: 0.8
+            }],
+            xaxis: {
+                showticklabels: false
+            },
+            yaxis: {
+                showticklabels: false
+            },
+            margin: { t: 20, b: 20, l: 20, r: 80 },
+            height: 300
+        };
 
-    // Criar o mapa de calor (heatmap)
-    const mapaFluxoData = [{
-      z: z,
-      type: 'heatmap',
-      colorscale: [
-        [0, 'rgb(0, 200, 0)'],
-        [0.5, 'rgb(255, 255, 0)'],
-        [1, 'rgb(255, 0, 0)']
-      ],
-      showscale: true,
-      colorbar: {
-        title: 'Fluxo',
-        titleside: 'right'
-      }
-    }];
+        Plotly.newPlot('mapa-fluxo', mapaFluxoData, mapaFluxoLayout);
 
-    const mapaFluxoLayout = {
-      margin: { t: 30, b: 30, l: 30, r: 30 },
-      xaxis: { showticklabels: false },
-      yaxis: { showticklabels: false },
-      annotations: [{
-        x: size/2,
-        y: size/2,
-        text: 'SEPLAG-CE',
-        showarrow: true,
-        arrowhead: 2,
-        arrowsize: 1,
-        arrowwidth: 2,
-        arrowcolor: '#000',
-        font: { color: '#000', size: 12 },
-        bgcolor: '#fff',
-        opacity: 0.8
-      }],
-      height: 450
-    };
+        // Dados para tempo de deslocamento
+        const rotas = ["Centro → SEPLAG", "BR-116 → SEPLAG", "Aldeota → SEPLAG", "Messejana → SEPLAG"];
+        const temposAtuais = [25, 35, 20, 40];
+        const temposMedios = [20, 30, 15, 30];
 
-    Plotly.newPlot('mapa-fluxo', mapaFluxoData, mapaFluxoLayout);
-  </script>
+        // Criar gráfico de tempo de deslocamento
+        const tempoDeslocamentoData = [
+            {
+                x: temposAtuais,
+                y: rotas,
+                type: 'bar',
+                orientation: 'h',
+                name: 'Tempo Atual',
+                marker: {
+                    color: 'blue'
+                }
+            },
+            {
+                x: temposMedios,
+                y: rotas,
+                type: 'bar',
+                orientation: 'h',
+                name: 'Tempo Médio',
+                marker: {
+                    color: 'lightblue'
+                }
+            }
+        ];
 
+        const tempoDeslocamentoLayout = {
+            barmode: 'group',
+            xaxis: {
+                title: 'Tempo (minutos)'
+            },
+            legend: {
+                orientation: 'h',
+                y: 1.1
+            },
+            margin: { t: 40, b: 40, l: 120, r: 20 },
+            height: 300
+        };
+
+        Plotly.newPlot('tempo-deslocamento', tempoDeslocamentoData, tempoDeslocamentoLayout);
+
+        // Dados para estatísticas de sinistros
+        const meses = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun"];
+        const acidentesLeves = [12, 15, 10, 8, 9, 11];
+        const acidentesGraves = [5, 3, 4, 2, 3, 2];
+
+        // Criar gráfico de estatísticas de sinistros
+        const estatisticasSinistrosData = [
+            {
+                x: meses,
+                y: acidentesLeves,
+                type: 'scatter',
+                mode: 'lines+markers',
+                name: 'Acidentes Leves',
+                line: {
+                    color: 'orange',
+                    width: 2
+                },
+                marker: {
+                    size: 8
+                }
+            },
+            {
+                x: meses,
+                y: acidentesGraves,
+                type: 'scatter',
+                mode: 'lines+markers',
+                name: 'Acidentes Graves',
+                line: {
+                    color: 'red',
+                    width: 2
+                },
+                marker: {
+                    size: 8
+                }
+            }
+        ];
+
+        const estatisticasSinistrosLayout = {
+            xaxis: {
+                title: 'Mês'
+            },
+            yaxis: {
+                title: 'Número de Acidentes'
+            },
+            legend: {
+                orientation: 'h',
+                y: 1.1
+            },
+            margin: { t: 40, b: 40, l: 50, r: 20 },
+            height: 300
+        };
+
+        Plotly.newPlot('estatisticas-sinistros', estatisticasSinistrosData, estatisticasSinistrosLayout);
+    </script>
 </body>
 </html>
