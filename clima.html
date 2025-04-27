@@ -82,15 +82,6 @@
         .conditions-box .uv-index {
             font-size: 18px;
         }
-        .high-uv {
-            color: red;
-        }
-        .medium-uv {
-            color: orange;
-        }
-        .low-uv {
-            color: green;
-        }
         .footer {
             text-align: center;
             margin-top: 50px;
@@ -115,6 +106,7 @@
         }
     </style>
 </head>
+
 <body>
     <div class="header">
         <div class="header-left">
@@ -147,18 +139,9 @@
                 <div class="dashboard-box">
                     <h3>Condições Atuais</h3>
                     <div class="conditions-box">
-                        <div class="condition">Parcialmente Nublado</div>
-                        <div class="uv-index high-uv">Índice UV: 8</div>
+                        <div class="condition">Carregando...</div>
+                        <div class="uv-index">Índice UV: Em breve</div>
                     </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="dashboard-row">
-            <div class="dashboard-col" style="width: 100%; margin-right: 0;">
-                <div class="dashboard-box">
-                    <h3>Previsão para os Próximos Dias</h3>
-                    <div id="previsao-chart"></div>
                 </div>
             </div>
         </div>
@@ -173,145 +156,89 @@
     </div>
 
     <script>
-        // Atualizar a data de atualização
-        document.getElementById('update-date').textContent = new Date().toLocaleDateString('pt-BR', {
-            day: '2-digit',
-            month: '2-digit',
-            year: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit'
-        });
+        const apiKey = 'd9da98b3560b007a19706897feaa7416';
+        const cidade = 'Fortaleza';
+        const url = `https://api.openweathermap.org/data/2.5/weather?q=${cidade}&appid=${apiKey}&units=metric&lang=pt_br`;
 
-        // Dados simulados
-        const temperatura = 29;
-        const umidade = 65;
-        
-        // Criar gráfico de temperatura
-        const temperaturaGauge = {
-            type: "indicator",
-            mode: "gauge+number",
-            value: temperatura,
-            title: { text: "Temperatura (°C)" },
-            gauge: {
-                axis: { range: [0, 40], tickwidth: 1 },
-                bar: { color: "orange" },
-                steps: [
-                    { range: [0, 15], color: "lightblue" },
-                    { range: [15, 25], color: "lightgreen" },
-                    { range: [25, 35], color: "lightyellow" },
-                    { range: [35, 40], color: "lightcoral" }
-                ],
-                threshold: {
-                    line: { color: "red", width: 4 },
-                    thickness: 0.75,
-                    value: 35
+        fetch(url)
+          .then(response => response.json())
+          .then(data => {
+              const temperatura = data.main.temp;
+              const umidade = data.main.humidity;
+              const descricao = data.weather[0].description;
+
+              atualizarGraficos(temperatura, umidade, descricao);
+          })
+          .catch(error => {
+              console.error('Erro ao buscar dados do clima:', error);
+          });
+
+        function atualizarGraficos(temperatura, umidade, descricao) {
+            // Atualizar data
+            document.getElementById('update-date').textContent = new Date().toLocaleString('pt-BR', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+
+            // Atualizar gráfico de temperatura
+            const temperaturaGauge = {
+                type: "indicator",
+                mode: "gauge+number",
+                value: temperatura,
+                title: { text: "Temperatura (°C)" },
+                gauge: {
+                    axis: { range: [0, 40], tickwidth: 1 },
+                    bar: { color: "orange" },
+                    steps: [
+                        { range: [0, 15], color: "lightblue" },
+                        { range: [15, 25], color: "lightgreen" },
+                        { range: [25, 35], color: "lightyellow" },
+                        { range: [35, 40], color: "lightcoral" }
+                    ],
+                    threshold: {
+                        line: { color: "red", width: 4 },
+                        thickness: 0.75,
+                        value: 35
+                    }
                 }
-            }
-        };
+            };
+            Plotly.newPlot('temperatura-gauge', [temperaturaGauge], {
+                margin: { t: 50, b: 20, l: 20, r: 20 },
+                height: 250
+            });
 
-        Plotly.newPlot('temperatura-gauge', [temperaturaGauge], {
-            margin: { t: 50, b: 20, l: 20, r: 20 },
-            height: 250
-        });
-
-        // Criar gráfico de umidade
-        const umidadeGauge = {
-            type: "indicator",
-            mode: "gauge+number",
-            value: umidade,
-            title: { text: "Umidade (%)" },
-            gauge: {
-                axis: { range: [0, 100], tickwidth: 1 },
-                bar: { color: "blue" },
-                steps: [
-                    { range: [0, 30], color: "lightyellow" },
-                    { range: [30, 70], color: "lightblue" },
-                    { range: [70, 100], color: "royalblue" }
-                ],
-                threshold: {
-                    line: { color: "navy", width: 4 },
-                    thickness: 0.75,
-                    value: 85
+            // Atualizar gráfico de umidade
+            const umidadeGauge = {
+                type: "indicator",
+                mode: "gauge+number",
+                value: umidade,
+                title: { text: "Umidade (%)" },
+                gauge: {
+                    axis: { range: [0, 100], tickwidth: 1 },
+                    bar: { color: "blue" },
+                    steps: [
+                        { range: [0, 30], color: "lightyellow" },
+                        { range: [30, 70], color: "lightblue" },
+                        { range: [70, 100], color: "royalblue" }
+                    ],
+                    threshold: {
+                        line: { color: "navy", width: 4 },
+                        thickness: 0.75,
+                        value: 85
+                    }
                 }
-            }
-        };
+            };
+            Plotly.newPlot('umidade-gauge', [umidadeGauge], {
+                margin: { t: 50, b: 20, l: 20, r: 20 },
+                height: 250
+            });
 
-        Plotly.newPlot('umidade-gauge', [umidadeGauge], {
-            margin: { t: 50, b: 20, l: 20, r: 20 },
-            height: 250
-        });
-
-        // Dados para previsão
-        const dias = ['Hoje', 'Amanhã', 'Depois'];
-        const tempMax = [31, 30, 32];
-        const tempMin = [24, 23, 25];
-        const probChuva = [10, 30, 60];
-
-        // Criar gráfico de previsão
-        const previsaoData = [
-            {
-                x: dias,
-                y: tempMax,
-                type: 'bar',
-                name: 'Temp. Máxima',
-                marker: {
-                    color: 'orange'
-                },
-                text: tempMax,
-                textposition: 'outside'
-            },
-            {
-                x: dias,
-                y: tempMin,
-                type: 'bar',
-                name: 'Temp. Mínima',
-                marker: {
-                    color: 'lightblue'
-                },
-                text: tempMin,
-                textposition: 'outside'
-            },
-            {
-                x: dias,
-                y: probChuva,
-                type: 'scatter',
-                mode: 'lines+markers+text',
-                name: 'Prob. Chuva (%)',
-                yaxis: 'y2',
-                marker: {
-                    color: 'blue',
-                    size: 10
-                },
-                line: {
-                    color: 'blue',
-                    width: 2,
-                    dash: 'dot'
-                },
-                text: probChuva,
-                textposition: 'top center'
-            }
-        ];
-
-        const previsaoLayout = {
-            barmode: 'group',
-            yaxis: {
-                title: 'Temperatura (°C)'
-            },
-            yaxis2: {
-                title: 'Probabilidade de Chuva (%)',
-                overlaying: 'y',
-                side: 'right',
-                range: [0, 100]
-            },
-            legend: {
-                orientation: 'h',
-                y: 1.1
-            },
-            margin: { t: 20, b: 40, l: 50, r: 50 },
-            height: 300
-        };
-
-        Plotly.newPlot('previsao-chart', previsaoData, previsaoLayout);
+            // Atualizar condições atuais
+            document.querySelector('.conditions-box .condition').textContent = descricao.charAt(0).toUpperCase() + descricao.slice(1);
+        }
     </script>
 </body>
 </html>
