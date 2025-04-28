@@ -13,7 +13,7 @@
             background-color: #f8f9fa;
         }
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
             padding: 20px;
         }
@@ -43,22 +43,30 @@
             font-size: 12px;
             color: #666;
         }
+        .dashboard-row {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 30px;
+            gap: 30px;
+        }
         .dashboard-box {
             background-color: #fff;
-            border-radius: 5px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
             padding: 20px;
-            margin-bottom: 30px;
+            flex: 1;
+            min-width: 320px;
+            text-align: center;
         }
         .dashboard-box h3 {
-            text-align: center;
             color: #009933;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
         .back-button {
             display: inline-block;
-            margin-top: 20px;
-            padding: 10px 20px;
+            margin-top: 30px;
+            padding: 12px 24px;
             background-color: #009933;
             color: white;
             text-decoration: none;
@@ -68,15 +76,15 @@
         .footer {
             text-align: center;
             margin-top: 50px;
-            color: #666;
             font-size: 14px;
+            color: #666;
         }
     </style>
 </head>
 <body>
     <div class="header">
         <div class="header-left">
-            <img src="RBIM.png" alt="RBIM Logo">
+            <img src="https://rodrigueslope.github.io/seplag-dashboards/RBIM.png" alt="RBIM Logo">
             <h1>Qualidade do Ar</h1>
         </div>
         <div class="update-info">
@@ -85,15 +93,24 @@
     </div>
 
     <div class="container">
-        
-        <div class="dashboard-box">
-            <h3>Índice Atual de Qualidade do Ar (AQI)</h3>
-            <div id="aqi-gauge"></div>
+
+        <div class="dashboard-row">
+            <div class="dashboard-box">
+                <h3>Índice Atual de Qualidade do Ar (AQI)</h3>
+                <div id="aqi-gauge"></div>
+            </div>
+
+            <div class="dashboard-box">
+                <h3>Concentração Atual de PM2.5 (μg/m³)</h3>
+                <div id="pm25-gauge"></div>
+            </div>
         </div>
 
-        <div class="dashboard-box">
-            <h3>Tendência do AQI nas Últimas 24 Horas</h3>
-            <div id="aqi-trend"></div>
+        <div class="dashboard-row">
+            <div class="dashboard-box" style="flex: 1 1 90%;">
+                <h3>Tendência do AQI nas Últimas 24 Horas</h3>
+                <div id="tendencia-chart"></div>
+            </div>
         </div>
 
         <div style="text-align: center;">
@@ -101,33 +118,31 @@
         </div>
 
         <div class="footer">
-            <p>Este dashboard foi desenvolvido para o tour virtual Matterport da SEPLAG-CE.</p>
+            <p>Este dashboard foi desenvolvido para o projeto SEPLAG-CE / RBIM.</p>
         </div>
 
     </div>
 
     <script>
-        // Atualizar a data de atualização
-        document.getElementById('update-date').textContent = new Date().toLocaleDateString('pt-BR', {
-            day: '2-digit',
-            month: '2-digit',
-            year: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit'
+        // Atualizar a data e hora da página
+        document.getElementById('update-date').textContent = new Date().toLocaleString('pt-BR', {
+            day: '2-digit', month: '2-digit', year: 'numeric',
+            hour: '2-digit', minute: '2-digit'
         });
 
-        // Simulação de dados de AQI
-        let aqiAtual = 45;
-        const aqiValores = Array(24).fill().map((_, i) => aqiAtual + Math.sin(i / 3) * 5);
+        // Simulando dados
+        const aqiNow = 45;
+        const pm25Now = 12;
 
-        // Gague AQI Atual
+        // AQI Gauge
         const aqiGauge = {
             type: "indicator",
             mode: "gauge+number",
-            value: aqiAtual,
-            title: { text: "AQI Agora", font: { size: 24 } },
+            value: aqiNow,
+            title: { text: "AQI Agora", font: { size: 20 } },
             gauge: {
-                axis: { range: [0, 300] },
+                axis: { range: [0, 300], tickwidth: 1, tickcolor: "#000" },
+                bar: { color: "#009933" },
                 steps: [
                     { range: [0, 50], color: "lightgreen" },
                     { range: [50, 100], color: "yellow" },
@@ -138,48 +153,62 @@
                 threshold: {
                     line: { color: "red", width: 4 },
                     thickness: 0.75,
-                    value: 100
+                    value: 150
                 }
             }
         };
 
-        Plotly.newPlot('aqi-gauge', [aqiGauge], {
-            margin: { t: 50, b: 20, l: 20, r: 20 },
-            height: 300
-        });
-
-        // Gráfico Tendência - Linha animada tipo "onda"
-        const trace = {
-            x: Array.from({length: 24}, (_, i) => `${i}h`),
-            y: [...aqiValores],
-            type: 'scatter',
-            mode: 'lines+markers',
-            line: { shape: 'spline', color: 'green' },
-            fill: 'tozeroy',
-            fillcolor: 'rgba(0,153,51,0.2)'
+        // PM2.5 Gauge
+        const pm25Gauge = {
+            type: "indicator",
+            mode: "gauge+number",
+            value: pm25Now,
+            title: { text: "PM2.5 Agora (μg/m³)", font: { size: 20 } },
+            gauge: {
+                axis: { range: [0, 100], tickwidth: 1, tickcolor: "#000" },
+                bar: { color: "#0066cc" },
+                steps: [
+                    { range: [0, 12], color: "lightgreen" },
+                    { range: [12, 35.4], color: "yellow" },
+                    { range: [35.4, 55.4], color: "orange" },
+                    { range: [55.4, 100], color: "red" }
+                ],
+                threshold: {
+                    line: { color: "red", width: 4 },
+                    thickness: 0.75,
+                    value: 35
+                }
+            }
         };
 
-        const layout = {
+        // Gráfico de Tendência do AQI
+        const hours = Array.from({length: 24}, (_, i) => i + 'h');
+        const aqiHistory = [48, 50, 52, 55, 53, 51, 49, 46, 45, 43, 42, 40, 39, 41, 44, 46, 48, 50, 52, 51, 49, 47, 46, 45];
+
+        const tendenciaData = [{
+            x: hours,
+            y: aqiHistory,
+            type: 'scatter',
+            mode: 'lines+markers',
+            fill: 'tozeroy',
+            line: { color: "#009933", width: 3 },
+            marker: { color: "green", size: 6 },
+            fillcolor: 'rgba(0, 153, 51, 0.2)'
+        }];
+
+        const tendenciaLayout = {
             xaxis: { title: 'Últimas Horas' },
             yaxis: { title: 'AQI', range: [0, 100] },
             margin: { t: 20, b: 40, l: 50, r: 20 },
-            height: 400
+            height: 350
         };
 
-        Plotly.newPlot('aqi-trend', [trace], layout);
-
-        // Atualizar automaticamente o gráfico de tendência (efeito onda)
-        setInterval(() => {
-            const novoValor = 45 + Math.sin(Date.now() / 100000) * 10 + Math.random() * 5;
-            aqiValores.shift();
-            aqiValores.push(Math.max(0, Math.min(100, novoValor)));
-
-            Plotly.update('aqi-trend', {
-                y: [aqiValores]
-            });
-        }, 30000); // Atualiza a cada 30 segundos
-
+        // Renderizar gráficos
+        Plotly.newPlot('aqi-gauge', [aqiGauge], { margin: { t: 0, b: 0 }, height: 300 });
+        Plotly.newPlot('pm25-gauge', [pm25Gauge], { margin: { t: 0, b: 0 }, height: 300 });
+        Plotly.newPlot('tendencia-chart', tendenciaData, tendenciaLayout);
     </script>
 
 </body>
 </html>
+
