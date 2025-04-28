@@ -1,214 +1,218 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard de Qualidade do Ar - SEPLAG-CE</title>
-    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f8f9fa;
-        }
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        .header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 20px;
-            background-color: #fff;
-            border-bottom: 1px solid #ddd;
-            margin-bottom: 30px;
-        }
-        .header-left {
-            display: flex;
-            align-items: center;
-        }
-        .header-left img {
-            height: 50px;
-            margin-right: 15px;
-        }
-        .header-left h1 {
-            margin: 0;
-            font-size: 24px;
-            color: #333;
-        }
-        .update-info {
-            font-size: 12px;
-            color: #666;
-        }
-        .dashboard-row {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            margin-bottom: 30px;
-            gap: 30px;
-        }
-        .dashboard-box {
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            padding: 20px;
-            flex: 1;
-            min-width: 320px;
-            text-align: center;
-        }
-        .dashboard-box h3 {
-            color: #009933;
-            margin-bottom: 15px;
-        }
-        .back-button {
-            display: inline-block;
-            margin-top: 30px;
-            padding: 12px 24px;
-            background-color: #009933;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-            font-weight: bold;
-        }
-        .footer {
-            text-align: center;
-            margin-top: 50px;
-            font-size: 14px;
-            color: #666;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard de Qualidade do Ar - SEPLAG-CE</title>
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f8f9fa;
+    }
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background-color: #fff;
+      padding: 20px;
+      border-bottom: 1px solid #ddd;
+    }
+    .header-left {
+      display: flex;
+      align-items: center;
+    }
+    .header-left img {
+      height: 50px;
+      margin-right: 15px;
+    }
+    .header-left h1 {
+      margin: 0;
+      font-size: 24px;
+      color: #333;
+    }
+    .update-info {
+      font-size: 12px;
+      color: #666;
+    }
+    .container {
+      padding: 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .dashboard-row {
+      display: flex;
+      flex-wrap: wrap;
+      margin-bottom: 30px;
+      gap: 20px;
+    }
+    .dashboard-box {
+      flex: 1;
+      background-color: #fff;
+      border-radius: 5px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      padding: 20px;
+      min-height: 300px;
+    }
+    h2 {
+      text-align: center;
+      color: #009933;
+      margin-bottom: 20px;
+    }
+    .footer {
+      text-align: center;
+      font-size: 14px;
+      color: #666;
+      margin-top: 40px;
+    }
+    .back-button {
+      margin-top: 20px;
+      background-color: #009933;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 5px;
+      text-decoration: none;
+      display: inline-block;
+      font-weight: bold;
+    }
+  </style>
 </head>
+
 <body>
-    <div class="header">
-        <div class="header-left">
-            <img src="https://rodrigueslope.github.io/seplag-dashboards/RBIM.png" alt="RBIM Logo">
-            <h1>Qualidade do Ar</h1>
-        </div>
-        <div class="update-info">
-            Atualizado em: <span id="update-date"></span>
-        </div>
+  <div class="header">
+    <div class="header-left">
+      <img src="https://www.seplag.ce.gov.br/wp-content/uploads/sites/14/2019/01/seplag-1.png" alt="SEPLAG-CE Logo">
+      <h1>Qualidade do Ar</h1>
+    </div>
+    <div class="update-info">
+      Atualizado em: <span id="update-date"></span>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="dashboard-row">
+      <div class="dashboard-box">
+        <h2>Índice Atual de Qualidade do Ar (AQI)</h2>
+        <div id="aqi-gauge"></div>
+      </div>
+      <div class="dashboard-box">
+        <h2>Concentração Atual de PM2.5 (µg/m³)</h2>
+        <div id="pm25-gauge"></div>
+      </div>
     </div>
 
-    <div class="container">
-
-        <div class="dashboard-row">
-            <div class="dashboard-box">
-                <h3>Índice Atual de Qualidade do Ar (AQI)</h3>
-                <div id="aqi-gauge"></div>
-            </div>
-
-            <div class="dashboard-box">
-                <h3>Concentração Atual de PM2.5 (μg/m³)</h3>
-                <div id="pm25-gauge"></div>
-            </div>
-        </div>
-
-        <div class="dashboard-row">
-            <div class="dashboard-box" style="flex: 1 1 90%;">
-                <h3>Tendência do AQI nas Últimas 24 Horas</h3>
-                <div id="tendencia-chart"></div>
-            </div>
-        </div>
-
-        <div style="text-align: center;">
-            <a href="index.html" class="back-button">Voltar para Dashboards</a>
-        </div>
-
-        <div class="footer">
-            <p>Este dashboard foi desenvolvido para o projeto SEPLAG-CE / RBIM.</p>
-        </div>
-
+    <div class="dashboard-row">
+      <div class="dashboard-box" style="width: 100%;">
+        <h2>Tendência do AQI nas Últimas Horas</h2>
+        <div id="aqi-trend"></div>
+      </div>
     </div>
 
-    <script>
-        // Atualizar a data e hora da página
-        document.getElementById('update-date').textContent = new Date().toLocaleString('pt-BR', {
-            day: '2-digit', month: '2-digit', year: 'numeric',
-            hour: '2-digit', minute: '2-digit'
+    <div style="text-align: center;">
+      <a href="index.html" class="back-button">Voltar para Dashboards</a>
+    </div>
+
+    <div class="footer">
+      <p>Este dashboard foi desenvolvido para o projeto da SEPLAG-CE.</p>
+    </div>
+  </div>
+
+  <script>
+    const API_KEY = "d9da98b3560b007a19706897feaa7416"; // Sua API Key
+    const LAT = -3.7327;  // Latitude de Fortaleza
+    const LON = -38.5267; // Longitude de Fortaleza
+
+    let aqiHistory = [];
+
+    function fetchData() {
+      fetch(`https://api.openweathermap.org/data/2.5/air_pollution?lat=${LAT}&lon=${LON}&appid=${API_KEY}`)
+        .then(response => response.json())
+        .then(data => {
+          const aqi = data.list[0].main.aqi * 50; // Convertendo para escala 0-300
+          const pm25 = data.list[0].components.pm2_5.toFixed(1);
+
+          updateGauges(aqi, pm25);
+          updateTrend(aqi);
+
+          document.getElementById('update-date').textContent = new Date().toLocaleString('pt-BR');
+        })
+        .catch(error => {
+          console.error('Erro ao buscar dados da qualidade do ar:', error);
         });
+    }
 
-        // Simulando dados
-        const aqiNow = 45;
-        const pm25Now = 12;
+    function updateGauges(aqi, pm25) {
+      const aqiGauge = {
+        type: "indicator",
+        mode: "gauge+number",
+        value: aqi,
+        title: { text: "AQI Agora", font: { size: 18 } },
+        gauge: {
+          axis: { range: [0, 300] },
+          steps: [
+            { range: [0, 50], color: "#00e400" },
+            { range: [50, 100], color: "#ffff00" },
+            { range: [100, 150], color: "#ff7e00" },
+            { range: [150, 200], color: "#ff0000" },
+            { range: [200, 300], color: "#8f3f97" }
+          ]
+        }
+      };
 
-        // AQI Gauge
-        const aqiGauge = {
-            type: "indicator",
-            mode: "gauge+number",
-            value: aqiNow,
-            title: { text: "AQI Agora", font: { size: 20 } },
-            gauge: {
-                axis: { range: [0, 300], tickwidth: 1, tickcolor: "#000" },
-                bar: { color: "#009933" },
-                steps: [
-                    { range: [0, 50], color: "lightgreen" },
-                    { range: [50, 100], color: "yellow" },
-                    { range: [100, 150], color: "orange" },
-                    { range: [150, 200], color: "red" },
-                    { range: [200, 300], color: "purple" }
-                ],
-                threshold: {
-                    line: { color: "red", width: 4 },
-                    thickness: 0.75,
-                    value: 150
-                }
-            }
-        };
+      const pm25Gauge = {
+        type: "indicator",
+        mode: "gauge+number",
+        value: pm25,
+        title: { text: "PM2.5 Agora (µg/m³)", font: { size: 18 } },
+        gauge: {
+          axis: { range: [0, 100] },
+          steps: [
+            { range: [0, 12], color: "#00e400" },
+            { range: [12, 35.4], color: "#ffff00" },
+            { range: [35.4, 55.4], color: "#ff7e00" },
+            { range: [55.4, 150.4], color: "#ff0000" }
+          ]
+        }
+      };
 
-        // PM2.5 Gauge
-        const pm25Gauge = {
-            type: "indicator",
-            mode: "gauge+number",
-            value: pm25Now,
-            title: { text: "PM2.5 Agora (μg/m³)", font: { size: 20 } },
-            gauge: {
-                axis: { range: [0, 100], tickwidth: 1, tickcolor: "#000" },
-                bar: { color: "#0066cc" },
-                steps: [
-                    { range: [0, 12], color: "lightgreen" },
-                    { range: [12, 35.4], color: "yellow" },
-                    { range: [35.4, 55.4], color: "orange" },
-                    { range: [55.4, 100], color: "red" }
-                ],
-                threshold: {
-                    line: { color: "red", width: 4 },
-                    thickness: 0.75,
-                    value: 35
-                }
-            }
-        };
+      Plotly.newPlot('aqi-gauge', [aqiGauge], { margin: { t: 20, b: 20 } });
+      Plotly.newPlot('pm25-gauge', [pm25Gauge], { margin: { t: 20, b: 20 } });
+    }
 
-        // Gráfico de Tendência do AQI
-        const hours = Array.from({length: 24}, (_, i) => i + 'h');
-        const aqiHistory = [48, 50, 52, 55, 53, 51, 49, 46, 45, 43, 42, 40, 39, 41, 44, 46, 48, 50, 52, 51, 49, 47, 46, 45];
+    function updateTrend(aqi) {
+      const now = new Date();
+      aqiHistory.push({ time: now.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }), value: aqi });
 
-        const tendenciaData = [{
-            x: hours,
-            y: aqiHistory,
-            type: 'scatter',
-            mode: 'lines+markers',
-            fill: 'tozeroy',
-            line: { color: "#009933", width: 3 },
-            marker: { color: "green", size: 6 },
-            fillcolor: 'rgba(0, 153, 51, 0.2)'
-        }];
+      if (aqiHistory.length > 24) {
+        aqiHistory.shift();
+      }
 
-        const tendenciaLayout = {
-            xaxis: { title: 'Últimas Horas' },
-            yaxis: { title: 'AQI', range: [0, 100] },
-            margin: { t: 20, b: 40, l: 50, r: 20 },
-            height: 350
-        };
+      const data = [{
+        x: aqiHistory.map(d => d.time),
+        y: aqiHistory.map(d => d.value),
+        type: 'scatter',
+        mode: 'lines+markers',
+        fill: 'tozeroy',
+        line: { color: "#009933" },
+        fillcolor: 'rgba(0, 153, 51, 0.2)'
+      }];
 
-        // Renderizar gráficos
-        Plotly.newPlot('aqi-gauge', [aqiGauge], { margin: { t: 0, b: 0 }, height: 300 });
-        Plotly.newPlot('pm25-gauge', [pm25Gauge], { margin: { t: 0, b: 0 }, height: 300 });
-        Plotly.newPlot('tendencia-chart', tendenciaData, tendenciaLayout);
-    </script>
+      const layout = {
+        margin: { t: 20, b: 40 },
+        xaxis: { title: 'Últimas Horas' },
+        yaxis: { title: 'AQI', range: [0, 300] },
+        height: 350
+      };
 
+      Plotly.newPlot('aqi-trend', data, layout);
+    }
+
+    // Atualizar automaticamente a cada 5 minutos
+    fetchData();
+    setInterval(fetchData, 300000); // 5 minutos = 300000 ms
+  </script>
 </body>
 </html>
 
