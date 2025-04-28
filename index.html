@@ -1,210 +1,174 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboards SEPLAG-CE</title>
-    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f8f9fa;
-        }
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        .header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 20px;
-            background-color: #fff;
-            border-bottom: 1px solid #ddd;
-            margin-bottom: 30px;
-        }
-        .header-left {
-            display: flex;
-            align-items: center;
-        }
-        .header-left img {
-            height: 50px;
-            margin-right: 15px;
-        }
-        .header-left h1 {
-            margin: 0;
-            font-size: 24px;
-            color: #333;
-        }
-        .update-info {
-            font-size: 12px;
-            color: #666;
-        }
-        .dashboard-cards {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 30px;
-            margin-bottom: 40px;
-        }
-        .card {
-            width: 22%;
-            min-width: 250px;
-            padding: 15px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-            border-radius: 5px;
-            background-color: #fff;
-            transition: transform 0.3s ease;
-        }
-        .card:hover {
-            transform: translateY(-5px);
-        }
-        .card h3 {
-            text-align: center;
-            margin-top: 0;
-        }
-        .card-image {
-            height: 120px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-bottom: 15px;
-            border-radius: 5px;
-        }
-        .card-clima {
-            background-color: #e6f2ff;
-        }
-        .card-ar {
-            background-color: #e6ffe6;
-        }
-        .card-mobilidade {
-            background-color: #fff2e6;
-        }
-        .card-energia {
-            background-color: #f9e6ff;
-        }
-        .card p {
-            text-align: center;
-            height: 60px;
-            margin-bottom: 20px;
-        }
-        .card-button {
-            display: block;
-            width: 100%;
-            padding: 10px;
-            background-color: #0066cc;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            text-align: center;
-            text-decoration: none;
-            font-weight: bold;
-        }
-        .card-button.clima {
-            background-color: #0066cc;
-        }
-        .card-button.ar {
-            background-color: #009933;
-        }
-        .card-button.mobilidade {
-            background-color: #cc6600;
-        }
-        .card-button.energia {
-            background-color: #660066;
-        }
-        .footer {
-            text-align: center;
-            margin-top: 50px;
-            color: #666;
-            font-size: 14px;
-        }
-        @media (max-width: 768px) {
-            .dashboard-cards {
-                flex-direction: column;
-                align-items: center;
-            }
-            .card {
-                width: 90%;
-            }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RBIM Dashboards - SEPLAG-CE</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Roboto', Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f0f4f8;
+    }
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background-color: #ffffff;
+      padding: 15px 30px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .header-left {
+      display: flex;
+      align-items: center;
+    }
+    .header-left img {
+      height: 45px;
+      margin-right: 15px;
+    }
+    .header-left h1 {
+      font-size: 22px;
+      color: #0066cc;
+      margin: 0;
+    }
+    .update-info {
+      font-size: 12px;
+      color: #777;
+    }
+    .container {
+      max-width: 1300px;
+      margin: 30px auto;
+      padding: 0 20px;
+    }
+    .title {
+      text-align: center;
+      font-size: 20px;
+      margin-bottom: 40px;
+      color: #333;
+    }
+    .dashboard-cards {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 30px;
+      justify-content: center;
+    }
+    .card {
+      background: #ffffff;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+      transition: 0.3s;
+      width: 280px;
+      text-align: center;
+      padding: 20px;
+    }
+    .card:hover {
+      transform: translateY(-5px);
+    }
+    .card-icon {
+      font-size: 50px;
+      margin-bottom: 15px;
+    }
+    .card h3 {
+      margin: 10px 0;
+      font-size: 20px;
+    }
+    .card p {
+      color: #666;
+      font-size: 14px;
+      height: 60px;
+      margin-bottom: 20px;
+    }
+    .card a {
+      text-decoration: none;
+      display: inline-block;
+      background-color: #0066cc;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 5px;
+      font-weight: bold;
+      transition: background 0.3s;
+    }
+    .card a:hover {
+      background-color: #004999;
+    }
+    .footer {
+      margin-top: 50px;
+      text-align: center;
+      color: #777;
+      font-size: 13px;
+    }
+    @media (max-width: 768px) {
+      .dashboard-cards {
+        flex-direction: column;
+        align-items: center;
+      }
+    }
+  </style>
 </head>
 <body>
-    <div class="header">
-        <div class="header-left">
-            <img src="https://www.seplag.ce.gov.br/wp-content/uploads/sites/14/2019/01/seplag-1.png" alt="SEPLAG-CE Logo">
-            <h1>Dashboards Interativos - SEPLAG-CE</h1>
-        </div>
-        <div class="update-info">
-            Atualizado em: <span id="update-date"></span>
-        </div>
+
+<div class="header">
+  <div class="header-left">
+    <img src="RBIM.png" alt="RBIM Logo">
+    <h1>RBIM - Dashboards Interativos</h1>
+  </div>
+  <div class="update-info">
+    Atualizado em: <span id="update-date"></span>
+  </div>
+</div>
+
+<div class="container">
+  <p class="title">Selecione um dos dashboards abaixo para visualizar dados em tempo real:</p>
+
+  <div class="dashboard-cards">
+
+    <div class="card">
+      <div class="card-icon">🌤️</div>
+      <h3 style="color:#0066cc;">Condições Climáticas</h3>
+      <p>Temperatura, umidade, previsão do tempo e índice UV da região SEPLAG-CE.</p>
+      <a href="clima.html">Acessar Dashboard</a>
     </div>
 
-    <div class="container">
-        <p style="text-align: center; font-size: 18px; margin-bottom: 30px;">
-            Selecione um dos dashboards abaixo para visualizar dados em tempo real relacionados à localização da SEPLAG-CE:
-        </p>
-
-        <div class="dashboard-cards">
-            <!-- Card para Dashboard de Clima -->
-            <div class="card">
-                <h3 style="color: #0066cc;">Condições Climáticas</h3>
-                <div class="card-image card-clima">
-                    <i class="weather-icon" style="font-size: 48px;">🌤️</i>
-                </div>
-                <p>Temperatura, umidade, previsão do tempo e índice UV para a região da SEPLAG-CE.</p>
-                <a href="clima.html" class="card-button clima">Acessar Dashboard</a>
-            </div>
-
-            <!-- Card para Dashboard de Qualidade do Ar -->
-            <div class="card">
-                <h3 style="color: #009933;">Qualidade do Ar</h3>
-                <div class="card-image card-ar">
-                    <i class="air-icon" style="font-size: 48px;">🍃</i>
-                </div>
-                <p>Índice de qualidade do ar, concentração de poluentes e recomendações de saúde.</p>
-                <a href="ar.html" class="card-button ar">Acessar Dashboard</a>
-            </div>
-
-            <!-- Card para Dashboard de Mobilidade -->
-            <div class="card">
-                <h3 style="color: #cc6600;">Mobilidade Urbana</h3>
-                <div class="card-image card-mobilidade">
-                    <i class="mobility-icon" style="font-size: 48px;">🚗</i>
-                </div>
-                <p>Fluxo de trânsito, tempos de deslocamento, linhas de ônibus e estatísticas de sinistros.</p>
-                <a href="mobilidade.html" class="card-button mobilidade">Acessar Dashboard</a>
-            </div>
-
-            <!-- Card para Dashboard de Energia -->
-            <div class="card">
-                <h3 style="color: #660066;">Consumo Energético</h3>
-                <div class="card-image card-energia">
-                    <i class="energy-icon" style="font-size: 48px;">⚡</i>
-                </div>
-                <p>Consumo de energia, comparativos, eficiência energética e dicas de economia.</p>
-                <a href="energia.html" class="card-button energia">Acessar Dashboard</a>
-            </div>
-        </div>
-
-        <div class="footer">
-            <p>Estes dashboards foram desenvolvidos para o tour virtual Matterport da SEPLAG-CE.</p>
-        </div>
+    <div class="card">
+      <div class="card-icon">🍃</div>
+      <h3 style="color:#009933;">Qualidade do Ar</h3>
+      <p>Índice de poluição, concentração de poluentes e orientações de saúde.</p>
+      <a href="ar.html" style="background-color:#009933;">Acessar Dashboard</a>
     </div>
 
-    <script>
-        // Atualizar a data de atualização
-        document.getElementById('update-date').textContent = new Date().toLocaleDateString('pt-BR', {
-            day: '2-digit',
-            month: '2-digit',
-            year: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit'
-        });
-    </script>
+    <div class="card">
+      <div class="card-icon">🚗</div>
+      <h3 style="color:#cc6600;">Mobilidade Urbana</h3>
+      <p>Fluxo de trânsito, tempos de deslocamento e linhas de ônibus.</p>
+      <a href="mobilidade.html" style="background-color:#cc6600;">Acessar Dashboard</a>
+    </div>
+
+    <div class="card">
+      <div class="card-icon">⚡</div>
+      <h3 style="color:#660066;">Consumo Energético</h3>
+      <p>Consumo e eficiência de energia, dicas de economia no SEPLAG-CE.</p>
+      <a href="energia.html" style="background-color:#660066;">Acessar Dashboard</a>
+    </div>
+
+  </div>
+
+  <div class="footer">
+    <p>Desenvolvido por RBIM • Tour Virtual SEPLAG-CE 2025</p>
+  </div>
+</div>
+
+<script>
+  document.getElementById('update-date').textContent = new Date().toLocaleDateString('pt-BR', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
+  });
+</script>
+
 </body>
 </html>
+
